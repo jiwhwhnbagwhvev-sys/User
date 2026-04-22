@@ -91,13 +91,6 @@ body{
 <div id="analisis"></div>
 </div>
 
-<!-- 🔥 VIDEO FIX -->
-<div class="card">
-<video autoplay muted loop playsinline onclick="this.paused?this.play():this.pause()" style="width:100%;border-radius:10px">
-  <source src="kotak video anime.mp4" type="video/mp4">
-</video>
-</div>
-
 <!-- FORM -->
 <div class="card">
 <h3>Buat Akun</h3>
@@ -192,8 +185,6 @@ let akunData = [
   { user: 'Konten', pass: ' xxxx' }, 
   { user: 'Yuri99', pass: 'Txxxx' }
 ];
-
-
 function sensor(p){return p?p[0]+"xxxx":""}
 
 function renderAkun(){
@@ -221,7 +212,12 @@ function kirim(){
   return;
  }
 
- let data=JSON.parse(localStorage.getItem("botdata"))||[];
+ let data=[];
+ try{
+  data = JSON.parse(localStorage.getItem("botdata")) || [];
+ }catch(e){
+  data = [];
+ }
 
  data.push({
   username:username.value,
@@ -238,7 +234,12 @@ function kirim(){
 
 // BOT + WA
 setInterval(()=>{
- let data=JSON.parse(localStorage.getItem("botdata"))||[];
+ let data=[];
+ try{
+  data = JSON.parse(localStorage.getItem("botdata")) || [];
+ }catch(e){
+  data = [];
+ }
 
  data.forEach(d=>{
   if(d.sent) return;
@@ -257,7 +258,7 @@ Role: ${d.role}
 Status: AKTIF
 Waktu: ${d.waktu}`;
 
-    window.open("https://wa.me/6281385998324?text="+encodeURIComponent(pesan));
+    location.href="https://wa.me/6281385998324?text="+encodeURIComponent(pesan);
    }
   }
  });
@@ -270,7 +271,12 @@ Waktu: ${d.waktu}`;
 // RENDER
 function render(){
 
- let data=JSON.parse(localStorage.getItem("botdata"))||[];
+ let data=[];
+ try{
+  data = JSON.parse(localStorage.getItem("botdata")) || [];
+ }catch(e){
+  data = [];
+ }
 
  bot.innerHTML=data.map(d=>{
  let status="";
