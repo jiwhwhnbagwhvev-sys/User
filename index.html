@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -12,6 +12,25 @@ body{
   color:white;
   background:url('begron.png') no-repeat center;
   background-size:cover;
+  overflow-x:hidden;
+}
+
+/* 🌸 SAKURA */
+.sakura{
+  position:fixed;
+  top:-10px;
+  width:15px;
+  height:15px;
+  background:pink;
+  border-radius:50%;
+  opacity:0.7;
+  animation:fall linear infinite;
+}
+
+@keyframes fall{
+  to{
+    transform:translateY(110vh) rotate(360deg);
+  }
 }
 
 /* OVERLAY */
@@ -52,14 +71,14 @@ body{
   display:block;
   margin:10px auto;
   border-radius:20px;
-  box-shadow:0 0 20px #ff00aa;
+  box-shadow:0 0 25px #ff00aa;
 }
 
 /* TITLE */
 .title{
   text-align:center;
   font-size:24px;
-  text-shadow:0 0 10px #ff00aa;
+  text-shadow:0 0 15px #ff00aa;
 }
 
 /* CONTAINER */
@@ -73,7 +92,9 @@ body{
   border-radius:15px;
   margin-top:15px;
   box-shadow:0 0 40px #ff00aa;
+  transition:0.3s;
 }
+.card:hover{transform:scale(1.02)}
 
 /* INPUT */
 .input{
@@ -101,9 +122,6 @@ body{
   cursor:pointer;
 }
 .role.active{background:#ff00aa}
-
-/* HARGA */
-.harga{color:yellow;margin-top:10px;font-weight:bold}
 
 /* BUTTON */
 .btn{
@@ -185,7 +203,7 @@ body{
 <div class="role" onclick="selectRole(this,'MEMBER',40000)">MEMBER</div>
 </div>
 
-<div id="harga" class="harga"></div>
+<div id="harga"></div>
 
 <button class="btn" onclick="kirim()">📤 Kirim ke Admin</button>
 <button class="btn" onclick="hapus()">🗑️ Hapus Semua</button>
@@ -201,10 +219,37 @@ body{
 
 </div>
 
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"></script>
+
 <script>
 
-function toggleMenu(){ menuBox.classList.toggle("show"); }
+// 🔥 CONFIG
+const firebaseConfig = {
+  apiKey: "AIzaSyA0NJaW-W50zCvJEiU4Zp2I",
+  authDomain: "vip-user-system-123.firebaseapp.com",
+  databaseURL: "https://vip-user-system-123-default-rtdb.firebaseio.com",
+  projectId: "vip-user-system-123",
+  storageBucket: "vip-user-system-123.appspot.com",
+  messagingSenderId: "126375271502",
+  appId: "1:126375271502:web:90e9ad8b47"
+};
 
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// 🌸 SAKURA LOOP
+setInterval(()=>{
+ let sakura=document.createElement("div");
+ sakura.className="sakura";
+ sakura.style.left=Math.random()*100+"vw";
+ sakura.style.animationDuration=(3+Math.random()*5)+"s";
+ document.body.appendChild(sakura);
+ setTimeout(()=>sakura.remove(),8000);
+},300);
+
+// 🔔 TOAST
 function toast(msg){
  let t=document.getElementById("toast");
  t.innerText=msg;
@@ -212,11 +257,13 @@ function toast(msg){
  setTimeout(()=>t.style.display="none",2000);
 }
 
+// MENU
+function toggleMenu(){ menuBox.classList.toggle("show"); }
 function logout(){ location.reload(); }
 
 let role="", harga=0, img="";
-const hargaEl=document.getElementById("harga");
 
+// ROLE
 function selectRole(el,r,h){
  document.querySelectorAll(".role").forEach(x=>x.classList.remove("active"));
  el.classList.add("active");
@@ -225,26 +272,25 @@ function selectRole(el,r,h){
  hargaEl.innerHTML="💰 Rp "+h.toLocaleString("id-ID");
 }
 
+// FILE
 file.onchange=e=>{
- let f=e.target.files[0];
  let r=new FileReader();
  r.onload=()=>{
   img=r.result;
   preview.src=img;
   preview.style.display="block";
  };
- r.readAsDataURL(f);
+ r.readAsDataURL(e.target.files[0]);
 };
 
+// KIRIM
 function kirim(){
  if(!username.value||!password.value||!role||!img){
   toast("Lengkapi semua!");
   return;
  }
 
- let data=JSON.parse(localStorage.getItem("permohonan"))||[];
-
- data.push({
+ db.ref("permohonan").push({
   username:username.value,
   password:password.value,
   role:role,
@@ -254,89 +300,43 @@ function kirim(){
   waktu:new Date().toLocaleString()
  });
 
- localStorage.setItem("permohonan",JSON.stringify(data));
-
- toast("📤 Dikirim ke admin!");
-
+ toast("🔥 Berhasil dikirim!");
  username.value="";
  password.value="";
  preview.style.display="none";
- hargaEl.innerHTML="";
-
- load();
 }
 
+// HAPUS
 function hapus(){
- localStorage.removeItem("permohonan");
- load();
+ if(confirm("Hapus semua data?")){
+  db.ref("permohonan").remove();
+ }
 }
 
+// LOAD
 function load(){
- let data=JSON.parse(localStorage.getItem("permohonan"))||[];
- let search=document.getElementById("search").value.toLowerCase();
+ db.ref("permohonan").on("value",(snap)=>{
+  let data=[];
+  snap.forEach(c=>data.push(c.val()));
 
- let pending=data.filter(d=>d.status==="Pending").length;
- let ok=data.filter(d=>d.status==="Approved").length;
- let no=data.filter(d=>d.status==="Ditolak").length;
- let total=data.length;
- let uang=data.reduce((a,b)=>a+b.harga,0);
-
- stat.innerHTML=`
- ⏳ Pending: ${pending}<br>
- ✔ Approved: ${ok}<br>
- ❌ Ditolak: ${no}<br>
- 👤 Total: ${total}<br>
- 💰 Rp ${uang.toLocaleString("id-ID")}
- `;
-
- list.innerHTML=data
- .filter(d=>d.username.toLowerCase().includes(search))
- .slice().reverse()
- .map(d=>{
-
- let status="";
-
- if(d.status==="Pending"){
-  status=`<span class="pending">⏳ Menunggu admin...</span>`;
- }
-
- if(d.status==="Approved"){
-  status=`
-  <span class="valid">✔ VALID</span><br>
-  ✔ Akun telah dibuat<br>
-  👤 ${d.username}<br>
-  🔒 ${d.password}<br>
-  📅 ${d.waktu}
+  stat.innerHTML=`
+  ⏳ ${data.filter(d=>d.status=="Pending").length} |
+  ✔ ${data.filter(d=>d.status=="Approved").length} |
+  ❌ ${data.filter(d=>d.status=="Rejected").length}
   `;
- }
 
- if(d.status==="Ditolak"){
-  status=`<span class="tolak">❌ Ditolak</span>`;
- }
-
- return `
- <div class="item">
- <b>${d.username}</b> (${d.role})<br>
- 💰 Rp ${d.harga.toLocaleString("id-ID")}<br>
- ${status}
- <img src="${d.img}" style="width:100%;margin-top:5px">
- </div>
- `;
- }).join("");
+  list.innerHTML=data.map(d=>`
+  <div class="item">
+  <b>${d.username}</b> (${d.role})<br>
+  💰 Rp ${d.harga}<br>
+  Status: ${d.status}
+  <img src="${d.img}">
+  </div>
+  `).join("");
+ });
 }
 
 load();
-
-// 🔥 AUTO UPDATE DARI ADMIN
-let lastData="";
-setInterval(()=>{
- let now=localStorage.getItem("permohonan");
- if(lastData && lastData!==now){
-   toast("🔔 Data diperbarui admin!");
- }
- lastData=now;
- load();
-},2000);
 
 </script>
 
