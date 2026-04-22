@@ -161,6 +161,13 @@ function pilih(el,r){
 
 // DATA AKUN
 let akunData = [
+  let akunData=[
+  {user:'Admind',pass:'ixxxxx',role:'VIP'},
+  {user:'Raza',pass:'Rxxxxx',role:'RESELLER'},
+  {user:'Bandu',pass:'Bxxxxx',role:'MEMBER'},
+  {user:'Bangar',pass:'bxxxxx',role:'OWNER'},
+  {user:'Naila',pass:'nxxxxx',role:'VIP'},
+  {user:'Pianan',pass:'Pxxxxxx''',role:'RESELLER'}, 
   { user: 'Panjol15', pass: 'Pxxxx' },
   { user: 'Saiful76', pass: 'sxxxx' },
   { user: 'zuansuju', pass: 'zxxxx' },
@@ -219,7 +226,7 @@ function renderAkun(){
  <div class="item" onclick="isi('${a.user}','${a.pass}')">
  👤 ${a.user}<br>
  🔒 ${sensor(a.pass)}<br>
- <span style="color:lime">✔</span> VIP
+ <span style="color:lime">✔</span> ${a.role}
  </div>
  `).join("")||"<div class='item'>Tidak ditemukan</div>";
 }
