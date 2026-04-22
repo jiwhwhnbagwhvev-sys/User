@@ -13,8 +13,6 @@ body{
   background:url('begron.png') no-repeat center;
   background-size:cover;
 }
-
-/* OVERLAY */
 .overlay{
   position:fixed;
   width:100%;
@@ -22,8 +20,6 @@ body{
   background:rgba(0,0,0,0.75);
   z-index:-1;
 }
-
-/* MENU */
 .menu{
   position:fixed;
   top:10px;
@@ -31,8 +27,6 @@ body{
   font-size:26px;
   cursor:pointer;
 }
-
-/* MENU BOX */
 .menu-box{
   position:fixed;
   top:50px;
@@ -45,8 +39,6 @@ body{
   box-shadow:0 0 25px #ff00aa;
 }
 .menu-box.show{display:block}
-
-/* LOGO */
 .logo-top{
   width:110px;
   display:block;
@@ -54,18 +46,12 @@ body{
   border-radius:20px;
   box-shadow:0 0 20px #ff00aa;
 }
-
-/* TITLE */
 .title{
   text-align:center;
   font-size:24px;
   text-shadow:0 0 10px #ff00aa;
 }
-
-/* CONTAINER */
 .container{padding:20px}
-
-/* CARD */
 .card{
   background:rgba(0,0,0,0.6);
   backdrop-filter:blur(10px);
@@ -74,8 +60,6 @@ body{
   margin-top:15px;
   box-shadow:0 0 40px #ff00aa;
 }
-
-/* INPUT */
 .input{
   width:100%;
   padding:12px;
@@ -85,14 +69,11 @@ body{
   background:#111;
   color:white;
 }
-
-/* ROLE */
 .role-box{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:10px;
 }
-
 .role{
   padding:12px;
   background:#111;
@@ -101,11 +82,7 @@ body{
   cursor:pointer;
 }
 .role.active{background:#ff00aa}
-
-/* HARGA */
 .harga{color:yellow;margin-top:10px;font-weight:bold}
-
-/* BUTTON */
 .btn{
   width:100%;
   padding:12px;
@@ -115,21 +92,15 @@ body{
   background:#ff00aa;
   color:white;
 }
-
-/* ITEM */
 .item{
   background:#020617;
   padding:12px;
   border-radius:10px;
   margin-top:10px;
 }
-
-/* STATUS */
 .pending{color:orange;}
 .valid{color:lime;}
 .tolak{color:red;}
-
-/* TOAST */
 .toast{
   position:fixed;
   top:20px;
@@ -140,6 +111,7 @@ body{
   display:none;
   box-shadow:0 0 20px #ff00aa;
 }
+img{width:100%;margin-top:10px;border-radius:10px}
 </style>
 </head>
 
@@ -162,13 +134,11 @@ body{
 <img src="logo.png" class="logo-top">
 <div class="title">💗 VIP USER PANEL</div>
 
-<!-- STAT -->
 <div class="card">
 <h3>📊 Statistik</h3>
 <div id="stat"></div>
 </div>
 
-<!-- FORM -->
 <div class="card">
 <h3>Buat Akun</h3>
 
@@ -176,7 +146,7 @@ body{
 <input id="password" class="input" placeholder="Password">
 
 <input type="file" id="file" class="input">
-<img id="preview" style="width:100%;display:none;border-radius:10px">
+<img id="preview" style="display:none">
 
 <div class="role-box">
 <div class="role" onclick="selectRole(this,'OWNER',100000)">OWNER</div>
@@ -192,18 +162,29 @@ body{
 
 </div>
 
-<!-- RIWAYAT -->
 <div class="card">
 <h3>📜 Riwayat</h3>
-<input id="search" class="input" placeholder="Cari username..." onkeyup="load()">
+<input id="search" class="input" placeholder="Cari username..." onkeyup="loadUI()">
 <div id="list"></div>
 </div>
 
 </div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-function toggleMenu(){ menuBox.classList.toggle("show"); }
+const firebaseConfig = {
+  apiKey: "AIzaSyA0NJaW-W50zCvJEiU4Zp2I",
+  databaseURL: "https://vip-user-system-123-default-rtdb.firebaseio.com",
+  projectId: "vip-user-system-123"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+window.toggleMenu = ()=> menuBox.classList.toggle("show");
+window.logout = ()=> location.reload();
 
 function toast(msg){
  let t=document.getElementById("toast");
@@ -212,12 +193,10 @@ function toast(msg){
  setTimeout(()=>t.style.display="none",2000);
 }
 
-function logout(){ location.reload(); }
-
 let role="", harga=0, img="";
 const hargaEl=document.getElementById("harga");
 
-function selectRole(el,r,h){
+window.selectRole = function(el,r,h){
  document.querySelectorAll(".role").forEach(x=>x.classList.remove("active"));
  el.classList.add("active");
  role=r;
@@ -226,17 +205,22 @@ function selectRole(el,r,h){
 }
 
 file.onchange=e=>{
- let f=e.target.files[0];
  let r=new FileReader();
  r.onload=()=>{
   img=r.result;
   preview.src=img;
   preview.style.display="block";
  };
- r.readAsDataURL(f);
+ r.readAsDataURL(e.target.files[0]);
 };
 
-push(ref(db,"permohonan"),{
+window.kirim = function(){
+ if(!username.value||!password.value||!role||!img){
+  toast("Lengkapi semua!");
+  return;
+ }
+
+ push(ref(db,"permohonan"),{
   username:username.value,
   password:password.value,
   role:role,
@@ -244,90 +228,69 @@ push(ref(db,"permohonan"),{
   img:img,
   status:"Pending",
   waktu:new Date().toLocaleString()
-});
+ });
 
-toast("📤 Dikirim ke admin!");
+ toast("📤 Dikirim ke admin!");
 
-username.value="";
-password.value="";
-preview.style.display="none";
-hargaEl.innerHTML="";
-  }   
+ username.value="";
+ password.value="";
+ preview.style.display="none";
+ hargaEl.innerHTML="";
+}
 
 window.hapus = function(){
  remove(ref(db,"permohonan"));
 }
 
-  
-function load(){
- onValue(ref(db,"permohonan"),snap=>{
-  let data=[];
-  snap.forEach(c=>data.push(c.val()));
+let allData=[];
 
-  let search=document.getElementById("search").value.toLowerCase();
+onValue(ref(db,"permohonan"),snap=>{
+ allData=[];
+ snap.forEach(c=>allData.push(c.val()));
+ updateUI();
+});
 
-  let pending=data.filter(d=>d.status==="Pending").length;
-  let ok=data.filter(d=>d.status==="Approved").length;
-  let no=data.filter(d=>d.status==="Rejected").length;
-  let total=data.length;
-  let uang=data.reduce((a,b)=>a+(b.harga||0),0);
-
-  stat.innerHTML=`
-  ⏳ Pending: ${pending}<br>
-  ✔ Approved: ${ok}<br>
-  ❌ Ditolak: ${no}<br>
-  👤 Total: ${total}<br>
-  💰 Rp ${uang.toLocaleString("id-ID")}
-  `;
-
-  list.innerHTML=data
-  .filter(d=>d.username.toLowerCase().includes(search))
-  .map(d=>{
-
-  let status="";
-  if(d.status==="Pending") status="<span class='pending'>⏳ Pending</span>";
-  if(d.status==="Approved") status="<span class='valid'>✔ Valid</span>";
-  if(d.status==="Rejected") status="<span class='tolak'>❌ Ditolak</span>";
-
-  return `
-  <div class="item">
-  <b>${d.username}</b><br>
-  ${d.password}<br>
-  ${d.waktu}<br>
-  ${status}
-  <img src="${d.img}">
-  </div>
-  `;
-  }).join("");
-
- });
+window.loadUI = function(){
+ updateUI();
 }
 
-load();
+function updateUI(){
+ let search=document.getElementById("search").value.toLowerCase();
+
+ let data=allData.filter(d=>d.username.toLowerCase().includes(search));
+
+ let pending=data.filter(d=>d.status==="Pending").length;
+ let ok=data.filter(d=>d.status==="Approved").length;
+ let no=data.filter(d=>d.status==="Rejected").length;
+ let total=data.length;
+ let uang=data.reduce((a,b)=>a+(b.harga||0),0);
+
+ stat.innerHTML=`
+ ⏳ Pending: ${pending}<br>
+ ✔ Approved: ${ok}<br>
+ ❌ Ditolak: ${no}<br>
+ 👤 Total: ${total}<br>
+ 💰 Rp ${uang.toLocaleString("id-ID")}
+ `;
+
+ list.innerHTML=data.reverse().map(d=>{
+
+ let status="";
+ if(d.status==="Pending") status="<span class='pending'>⏳ Menunggu admin...</span>";
+ if(d.status==="Approved") status="<span class='valid'>✔ VALID</span>";
+ if(d.status==="Rejected") status="<span class='tolak'>❌ Ditolak</span>";
 
  return `
  <div class="item">
  <b>${d.username}</b> (${d.role})<br>
  💰 Rp ${d.harga.toLocaleString("id-ID")}<br>
  ${status}
- <img src="${d.img}" style="width:100%;margin-top:5px">
+ <img src="${d.img}">
  </div>
  `;
  }).join("");
 }
-
-load();
-
-let pertama=true;
-
-onValue(ref(db,"permohonan"),snap=>{
- if(!pertama){
-   toast("🔔 Data diperbarui admin!");
- }
- pertama=false;
-});
-
 </script>
 
 </body>
-</html>
+</html>    
