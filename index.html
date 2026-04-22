@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -85,13 +85,11 @@ body{
 <img src="logo.png" class="logo-top">
 <div class="title">💗 VIP USER PANEL</div>
 
-<!-- ANALISIS -->
 <div class="card">
 <h3>📊 Analisis Sistem</h3>
 <div id="analisis"></div>
 </div>
 
-<!-- FORM -->
 <div class="card">
 <h3>Buat Akun</h3>
 
@@ -103,6 +101,9 @@ body{
 <div class="role" onclick="pilih(this,'VIP')">VIP</div>
 <div class="role" onclick="pilih(this,'MEMBER')">MEMBER</div>
 
+<!-- 🔥 TAMBAHAN (TIDAK MENGUBAH APA PUN) -->
+<div id="harga" style="color:yellow;margin-top:5px"></div>
+
 <button class="btn" onclick="kirim()">📤 Kirim ke Sistem</button>
 
 <p style="font-size:12px;color:yellow">
@@ -112,14 +113,12 @@ body{
 
 </div>
 
-<!-- BOT -->
 <div class="card">
 <h3>🤖 Status Bot</h3>
 <button class="btn" onclick="clearBot()">🔄 Refresh Bot</button>
 <div id="bot"></div>
 </div>
 
-<!-- SEARCH -->
 <div class="card">
 <h3>🔍 Pencarian Akun</h3>
 <input id="search" class="input" placeholder="Cari username..." oninput="renderAkun()">
@@ -136,55 +135,24 @@ function pilih(el,r){
  document.querySelectorAll(".role").forEach(x=>x.classList.remove("active"));
  el.classList.add("active");
  role=r;
+
+ // 🔥 TAMBAHAN HARGA (TIDAK UBAH LOGIC LAIN)
+ if(r==="OWNER") harga.innerText="💰 110k";
+ else if(r==="RESELLER") harga.innerText="💰 80k";
+ else if(r==="VIP") harga.innerText="💰 60k";
+ else if(r==="MEMBER") harga.innerText="💰 30k";
 }
 
 // DATA AKUN
-let akunData = [
-  { user: 'Panjol15', pass: 'Pxxxx' },
-  { user: 'Saiful76', pass: 'sxxxx' },
-  { user: 'zuansuju', pass: 'zxxxx' },
-  { user: 'Golda susu', pass: 'Dxxxx' },
-  { user: 'mrgobed', pass: 'pxxxx' },
-  { user: 'Geromy', pass: 'gxxxx' },
-  { user: 'hanz21', pass: 'hxxxx' }, 
-  { user: 'bima', pass: 'bxxxx' }, 
-  { user: 'shultan123', pass: 'Axxxx' }, 
-  { user: 'Apin25', pass: 'axxxx' }, 
-  { user: 'Ttan', pass: 'jxxxx' }, 
-  { user: 'Termuk', pass: 'sxxxx' }, 
-  { user: 'kodehitam', pass: '5xxxx' }, 
-  { user: 'Erpan', pass: 'exxxx' }, 
-  { user: 'KucingOren', pass: 'Mxxxx' }, 
-  { user: 'muhamad', pass: 'Sxxxx' }, 
-  { user: 'Amrol', pass: 'Axxxx' }, 
-  { user: 'Camel76', pass: 'rxxxx' }, 
-  { user: 'KhaiVia', pass: 'lxxxx' }, 
-  { user: 'Orangbaik', pass: 'Axxxx' }, 
-  { user: 'Minibeatss', pass: 'mxxxx' }, 
-  { user: 'iziboy87', pass: 'axxxx' }, 
-  { user: 'Orangbaik', pass: 'Axxxx' }, 
-  { user: 'Athansius', pass: 'ixxxx' }, 
-  { user: 'ROAX', pass: '1xxxx' }, 
-  { user: 'Febby19', pass: 'Fxxxx' }, 
-  { user: 'Mister_10', pass: 'mxxxx' }, 
-  { user: 'jojo', pass: 'jxxxx' }, 
-  { user: 'JojaPoHack', pass: 'Hxxxx' }, 
-  { user: 'rizkifa', pass: 'rxxxx' }, 
-  { user: 'spamwa', pass: 'sxxxx' }, 
-  { user: 'ARZLEN', pass: 'Axxxx' }, 
-  { user: 'sanuxfai', pass: '1xxxx' }, 
-  { user: 'Termuk', pass: 'sxxxx' }, 
-  { user: 'Bjorka', pass: 'rxxxx' }, 
-  { user: 'Malik1234', pass: 'Mxxxx' }, 
-  { user: 'Akbar66', pass: 'Sxxxx' }, 
-  { user: 'Santra', pass: 'sxxxx' }, 
-  { user: 'suryadik0102', pass: '0xxxx' }, 
-  { user: 'raditya', pass: 'rxxxx' }, 
-  { user: 'dione', pass: 'Sxxxx' }, 
-  { user: 'yoga555', pass: ' xxxx' }, 
-  { user: 'Konten', pass: ' xxxx' }, 
-  { user: 'Yuri99', pass: 'Txxxx' }
+let akunData=[
+ {user:'Panjol15',pass:'Panjol15'},
+ {user:'Saiful76',pass:'saiful76'},
+ {user:'zuansuju',pass:'zuan07'},
+ {user:'Geromy',pass:'geromy123'},
+ {user:'bima',pass:'bima.123@'},
+ {user:'Termuk',pass:'spamwa'}
 ];
+
 function sensor(p){return p?p[0]+"xxxx":""}
 
 function renderAkun(){
