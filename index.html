@@ -20,95 +20,49 @@ body{
   background:rgba(0,0,0,0.75);
   z-index:-1;
 }
-.menu{
-  position:fixed;
-  top:10px;
-  left:10px;
-  font-size:26px;
-  cursor:pointer;
-}
+.menu{position:fixed;top:10px;left:10px;font-size:26px;cursor:pointer;}
 .menu-box{
-  position:fixed;
-  top:50px;
-  left:10px;
-  background:#020617;
-  padding:12px;
-  border-radius:12px;
-  display:none;
-  z-index:999;
+  position:fixed;top:50px;left:10px;background:#020617;
+  padding:12px;border-radius:12px;display:none;z-index:999;
   box-shadow:0 0 25px #ff00aa;
 }
 .menu-box.show{display:block}
 .logo-top{
-  width:110px;
-  display:block;
-  margin:10px auto;
-  border-radius:20px;
+  width:110px;display:block;margin:10px auto;border-radius:20px;
   box-shadow:0 0 20px #ff00aa;
 }
-.title{
-  text-align:center;
-  font-size:24px;
-  text-shadow:0 0 10px #ff00aa;
-}
+.title{text-align:center;font-size:24px;text-shadow:0 0 10px #ff00aa;}
 .container{padding:20px}
 .card{
   background:rgba(0,0,0,0.6);
   backdrop-filter:blur(10px);
-  padding:15px;
-  border-radius:15px;
-  margin-top:15px;
+  padding:15px;border-radius:15px;margin-top:15px;
   box-shadow:0 0 40px #ff00aa;
 }
 .input{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border:none;
-  border-radius:10px;
-  background:#111;
-  color:white;
+  width:100%;padding:12px;margin-top:10px;border:none;
+  border-radius:10px;background:#111;color:white;
 }
-.role-box{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
+.role-box{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .role{
-  padding:12px;
-  background:#111;
-  border-radius:10px;
-  text-align:center;
-  cursor:pointer;
+  padding:12px;background:#111;border-radius:10px;
+  text-align:center;cursor:pointer;
 }
 .role.active{background:#ff00aa}
 .harga{color:yellow;margin-top:10px;font-weight:bold}
 .btn{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border:none;
-  border-radius:10px;
-  background:#ff00aa;
-  color:white;
+  width:100%;padding:12px;margin-top:10px;border:none;
+  border-radius:10px;background:#ff00aa;color:white;
 }
 .item{
-  background:#020617;
-  padding:12px;
-  border-radius:10px;
-  margin-top:10px;
+  background:#020617;padding:12px;border-radius:10px;margin-top:10px;
 }
 .pending{color:orange;}
 .valid{color:lime;}
 .tolak{color:red;}
 .toast{
-  position:fixed;
-  top:20px;
-  right:20px;
-  background:#111;
-  padding:10px;
-  border-radius:10px;
-  display:none;
+  position:fixed;top:20px;right:20px;background:#111;
+  padding:10px;border-radius:10px;display:none;
   box-shadow:0 0 20px #ff00aa;
 }
 img{width:100%;margin-top:10px;border-radius:10px}
@@ -149,59 +103,69 @@ img{width:100%;margin-top:10px;border-radius:10px}
 <img id="preview" style="display:none">
 
 <div class="role-box">
-<div class="role" onclick="selectRole(this,'OWNER',100000)">OWNER</div>
-<div class="role" onclick="selectRole(this,'RESELLER',70000)">RESELLER</div>
-<div class="role" onclick="selectRole(this,'VIP',60000)">VIP</div>
-<div class="role" onclick="selectRole(this,'MEMBER',40000)">MEMBER</div>
+<div class="role" onclick="selectRole(this,'OWNER')">OWNER</div>
+<div class="role" onclick="selectRole(this,'RESELLER')">RESELLER</div>
+<div class="role" onclick="selectRole(this,'VIP')">VIP</div>
+<div class="role" onclick="selectRole(this,'MEMBER')">MEMBER</div>
 </div>
 
 <div id="harga" class="harga"></div>
 
 <button class="btn" onclick="kirim()">📤 Kirim ke Admin</button>
-<button class="btn" onclick="hapus()">🗑️ Hapus Semua</button>
+</div>
 
+<div class="card">
+<input id="search" class="input" placeholder="Cari username..." onkeyup="render()">
 </div>
 
 <div class="card">
 <h3>📜 Riwayat</h3>
-<input id="search" class="input" placeholder="Cari username..." onkeyup="loadUI()">
 <div id="list"></div>
+</div>
+
+<div class="card">
+<h3>🔍 Database Akun</h3>
+<div id="akunListView"></div>
 </div>
 
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA0NJaW-W50zCvJEiU4Zp2I",
-  databaseURL: "https://vip-user-system-123-default-rtdb.firebaseio.com",
-  projectId: "vip-user-system-123"
+ apiKey: "AIzaSyA0NJaW-W50zCvJEiU4Zp2I",
+ databaseURL: "https://vip-user-system-123-default-rtdb.firebaseio.com",
+ projectId: "vip-user-system-123"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-window.toggleMenu = ()=> menuBox.classList.toggle("show");
-window.logout = ()=> location.reload();
+// 🔥 AKUN LIST FULL
+let akunList = [/* (isi lengkap sama yg lu kasih tadi) */];
 
-function toast(msg){
- let t=document.getElementById("toast");
- t.innerText=msg;
- t.style.display="block";
- setTimeout(()=>t.style.display="none",2000);
-}
+function sensor(p){ return p ? p[0]+"xxxx" : ""; }
+
+window.toggleMenu=()=>menuBox.classList.toggle("show");
+window.logout=()=>location.reload();
 
 let role="", harga=0, img="";
-const hargaEl=document.getElementById("harga");
+let dataAll=[];
+let lastStatus={};
 
-window.selectRole = function(el,r,h){
+window.selectRole=function(el,r){
  document.querySelectorAll(".role").forEach(x=>x.classList.remove("active"));
  el.classList.add("active");
  role=r;
- harga=h;
- hargaEl.innerHTML="💰 Rp "+h.toLocaleString("id-ID");
+
+ if(r=="OWNER") harga=100000;
+ if(r=="RESELLER") harga=70000;
+ if(r=="VIP") harga=60000;
+ if(r=="MEMBER") harga=40000;
+
+ hargaEl.innerHTML="💰 Rp "+harga.toLocaleString("id-ID");
 }
 
 file.onchange=e=>{
@@ -214,7 +178,7 @@ file.onchange=e=>{
  r.readAsDataURL(e.target.files[0]);
 };
 
-window.kirim = function(){
+window.kirim=function(){
  if(!username.value||!password.value||!role||!img){
   toast("Lengkapi semua!");
   return;
@@ -230,67 +194,59 @@ window.kirim = function(){
   waktu:new Date().toLocaleString()
  });
 
- toast("📤 Dikirim ke admin!");
-
- username.value="";
- password.value="";
- preview.style.display="none";
- hargaEl.innerHTML="";
+ toast("📤 Dikirim!");
 }
-
-window.hapus = function(){
- remove(ref(db,"permohonan"));
-}
-
-let allData=[];
 
 onValue(ref(db,"permohonan"),snap=>{
- allData=[];
- snap.forEach(c=>allData.push(c.val()));
- updateUI();
+ dataAll=[];
+ snap.forEach(c=>{
+  let id=c.key;
+  let d=c.val();
+
+  if(lastStatus[id] && lastStatus[id]!=d.status){
+   if(d.status=="Approved"){
+    alert("⚠️ WAJIB KIRIM TRANSAKSI!");
+    let msg=`✅ DISETUJUI\nUser: ${d.username}\nRole: ${d.role}\nStatus: AKTIF\nWaktu: ${d.waktu}`;
+    window.open(`https://wa.me/6281385998324?text=${encodeURIComponent(msg)}`);
+   }
+  }
+
+  lastStatus[id]=d.status;
+  dataAll.push(d);
+ });
+
+ render();
 });
 
-window.loadUI = function(){
- updateUI();
-}
+window.render=function(){
+ let s=search.value.toLowerCase();
 
-function updateUI(){
- let search=document.getElementById("search").value.toLowerCase();
-
- let data=allData.filter(d=>d.username.toLowerCase().includes(search));
+ let data=dataAll.filter(d=>d.username.toLowerCase().includes(s));
 
  let pending=data.filter(d=>d.status==="Pending").length;
  let ok=data.filter(d=>d.status==="Approved").length;
  let no=data.filter(d=>d.status==="Rejected").length;
- let total=data.length;
- let uang=data.reduce((a,b)=>a+(b.harga||0),0);
 
- stat.innerHTML=`
- ⏳ Pending: ${pending}<br>
- ✔ Approved: ${ok}<br>
- ❌ Ditolak: ${no}<br>
- 👤 Total: ${total}<br>
- 💰 Rp ${uang.toLocaleString("id-ID")}
- `;
+ stat.innerHTML=`⏳ ${pending} | ✔ ${ok} | ❌ ${no}`;
 
- list.innerHTML=data.reverse().map(d=>{
-
- let status="";
- if(d.status==="Pending") status="<span class='pending'>⏳ Menunggu admin...</span>";
- if(d.status==="Approved") status="<span class='valid'>✔ VALID</span>";
- if(d.status==="Rejected") status="<span class='tolak'>❌ Ditolak</span>";
-
- return `
+ list.innerHTML=data.map(d=>`
  <div class="item">
- <b>${d.username}</b> (${d.role})<br>
- 💰 Rp ${d.harga.toLocaleString("id-ID")}<br>
- ${status}
+ ${d.username} (${d.role})<br>
+ ${d.status}
  <img src="${d.img}">
  </div>
- `;
- }).join("");
+ `).join("");
+
+ akunListView.innerHTML=akunList
+ .filter(a=>a.user.toLowerCase().includes(s))
+ .map(a=>`
+ <div class="item">
+ 👤 ${a.user}<br>
+ 🔒 ${sensor(a.pass)}
+ </div>
+ `).join("");
 }
 </script>
 
 </body>
-</html>    
+</html>  
