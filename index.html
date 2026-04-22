@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VIP USER PRO MAX</title>
+<title>VIP USER ULTRA PANEL</title>
 
 <style>
 body{
@@ -12,14 +12,23 @@ body{
   background:#05070f;
   color:white;
 }
-.container{padding:20px}
+
+.topbar{
+  background:#111;
+  padding:15px;
+  text-align:center;
+  font-size:20px;
+  box-shadow:0 0 20px #ff00aa;
+}
+
+.container{padding:15px}
 
 .card{
-  background:rgba(17,24,39,0.9);
+  background:rgba(17,24,39,0.95);
   padding:15px;
   border-radius:15px;
   margin-top:15px;
-  box-shadow:0 0 25px #ff00aa55;
+  box-shadow:0 0 25px #ff00aa33;
 }
 
 .input,.btn{
@@ -30,11 +39,16 @@ body{
   border-radius:10px;
 }
 
-.input{background:#111827;color:white}
-.btn{background:#ff00aa;color:white;cursor:pointer}
+.input{background:#1f2937;color:white}
+
+.btn{
+  background:#ff00aa;
+  color:white;
+  cursor:pointer;
+}
 
 .role{
-  background:#111827;
+  background:#1f2937;
   padding:10px;
   margin-top:5px;
   border-radius:10px;
@@ -42,18 +56,20 @@ body{
 }
 .role.active{background:#ff00aa}
 
-img{width:100%;margin-top:10px;border-radius:10px}
+img{
+  width:100%;
+  border-radius:10px;
+  margin-top:10px;
+}
 
 .status-p{color:orange}
 .status-a{color:lime}
 .status-r{color:red}
 
-.topbar{
-  background:#111;
-  padding:10px;
-  text-align:center;
-  font-weight:bold;
-  box-shadow:0 0 20px #ff00aa;
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
 }
 
 .toast{
@@ -71,19 +87,18 @@ img{width:100%;margin-top:10px;border-radius:10px}
 
 <body>
 
-<div class="topbar">🔥 VIP USER PRO MAX</div>
-
+<div class="topbar">🔥 VIP USER ULTRA PANEL</div>
 <div class="toast" id="toast"></div>
 
 <div class="container">
 
-<!-- 📊 STAT -->
+<!-- STAT -->
 <div class="card">
 <h3>📊 Statistik</h3>
 <div id="stat"></div>
 </div>
 
-<!-- 🧾 FORM -->
+<!-- FORM -->
 <div class="card">
 <h3>📝 Buat Permohonan</h3>
 
@@ -93,10 +108,12 @@ img{width:100%;margin-top:10px;border-radius:10px}
 <input type="file" id="file" class="input">
 <img id="preview" style="display:none">
 
+<div class="grid">
 <div class="role" onclick="setRole('OWNER',100000,this)">OWNER</div>
 <div class="role" onclick="setRole('RESELLER',70000,this)">RESELLER</div>
 <div class="role" onclick="setRole('VIP',60000,this)">VIP</div>
 <div class="role" onclick="setRole('MEMBER',40000,this)">MEMBER</div>
+</div>
 
 <div id="harga"></div>
 
@@ -104,12 +121,18 @@ img{width:100%;margin-top:10px;border-radius:10px}
 <button class="btn" onclick="resetForm()">♻️ Reset</button>
 </div>
 
-<!-- 🔍 SEARCH -->
+<!-- SEARCH -->
 <div class="card">
 <input id="search" class="input" placeholder="Cari username..." onkeyup="render()">
+<select id="filter" class="input" onchange="render()">
+<option value="all">Semua</option>
+<option value="Pending">Pending</option>
+<option value="Approved">Approved</option>
+<option value="Rejected">Rejected</option>
+</select>
 </div>
 
-<!-- 📜 LIST -->
+<!-- LIST -->
 <div id="list"></div>
 
 </div>
@@ -122,10 +145,13 @@ img{width:100%;margin-top:10px;border-radius:10px}
 
 // 🔥 CONFIG
 const firebaseConfig = {
-  apiKey: "ISI_APIKEY",
-  authDomain: "ISI",
-  databaseURL: "ISI",
-  projectId: "ISI"
+  apiKey: "AIzaSyA0NJaW-W50zCvJEiU4Zp2I",
+  authDomain: "vip-user-system-123.firebaseapp.com",
+  databaseURL: "https://vip-user-system-123-default-rtdb.firebaseio.com",
+  projectId: "vip-user-system-123",
+  storageBucket: "vip-user-system-123.appspot.com",
+  messagingSenderId: "126375271502",
+  appId: "1:126375271502:web:90e9ad8b47"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -134,24 +160,24 @@ const db = firebase.database();
 let role="", harga=0, img="";
 let allData=[];
 
-// 🔔 TOAST
+// TOAST
 function toast(msg){
- let t=toastEl=document.getElementById("toast");
+ let t=document.getElementById("toast");
  t.innerText=msg;
  t.style.display="block";
  setTimeout(()=>t.style.display="none",2000);
 }
 
-// 🎭 ROLE
+// ROLE
 function setRole(r,h,el){
  document.querySelectorAll(".role").forEach(x=>x.classList.remove("active"));
  el.classList.add("active");
  role=r;
  harga=h;
- hargaEl.innerHTML="💰 Rp "+h.toLocaleString("id-ID");
+ document.getElementById("harga").innerHTML="💰 Rp "+h.toLocaleString("id-ID");
 }
 
-// 🖼️ FILE
+// FILE
 file.onchange=e=>{
  let f=e.target.files[0];
  let r=new FileReader();
@@ -163,7 +189,7 @@ file.onchange=e=>{
  r.readAsDataURL(f);
 };
 
-// 📤 KIRIM
+// KIRIM
 function kirim(){
  if(!username.value||!password.value||!role||!img){
   toast("Lengkapi semua!");
@@ -184,7 +210,7 @@ function kirim(){
  resetForm();
 }
 
-// 🔄 RESET
+// RESET
 function resetForm(){
  username.value="";
  password.value="";
@@ -193,10 +219,10 @@ function resetForm(){
  img="";
  preview.style.display="none";
  document.querySelectorAll(".role").forEach(x=>x.classList.remove("active"));
- hargaEl.innerHTML="";
+ document.getElementById("harga").innerHTML="";
 }
 
-// 📥 LOAD
+// LOAD
 function load(){
  db.ref("permohonan").on("value",(snap)=>{
   allData=[];
@@ -207,9 +233,14 @@ function load(){
  });
 }
 
-// 🎨 RENDER
+// RENDER
 function render(){
  let search=document.getElementById("search").value.toLowerCase();
+ let filter=document.getElementById("filter").value;
+
+ let data=allData
+  .filter(d=>d.username.toLowerCase().includes(search))
+  .filter(d=>filter==="all"||d.status===filter);
 
  let pending=allData.filter(d=>d.status=="Pending").length;
  let ok=allData.filter(d=>d.status=="Approved").length;
@@ -222,12 +253,11 @@ function render(){
  👤 Total ${allData.length}
  `;
 
- list.innerHTML=allData
- .filter(d=>d.username.toLowerCase().includes(search))
+ list.innerHTML=data
  .slice().reverse()
  .map(d=>{
 
- let statusClass=
+ let sClass=
   d.status=="Pending"?"status-p":
   d.status=="Approved"?"status-a":
   "status-r";
@@ -236,7 +266,7 @@ function render(){
  <div class="card">
  <b>${d.username}</b> (${d.role})<br>
  💰 Rp ${d.harga}<br>
- <span class="${statusClass}">${d.status}</span><br>
+ <span class="${sClass}">${d.status}</span><br>
  <img src="${d.img}">
 
  <button class="btn" onclick="hapus('${d.id}')">🗑️ Hapus</button>
@@ -245,14 +275,14 @@ function render(){
  }).join("");
 }
 
-// 🗑️ HAPUS
+// HAPUS
 function hapus(id){
  if(confirm("Hapus data?")){
   db.ref("permohonan/"+id).remove();
  }
 }
 
-// 🚀 INIT
+// INIT
 load();
 
 </script>
