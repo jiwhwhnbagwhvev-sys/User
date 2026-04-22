@@ -7,65 +7,64 @@
 
 <style>
 body{
-  margin:0;
-  font-family:Arial;
-  color:white;
-  background:url('begron.png') no-repeat center;
-  background-size:cover;
+ margin:0;
+ font-family:Arial;
+ color:white;
+ background:url('begron.png') no-repeat center;
+ background-size:cover;
 }
 .overlay{
-  position:fixed;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.75);
-  z-index:-1;
+ position:fixed;
+ width:100%;
+ height:100%;
+ background:rgba(0,0,0,0.75);
+ z-index:-1;
 }
 .menu{position:fixed;top:10px;left:10px;font-size:26px;cursor:pointer;}
 .menu-box{
-  position:fixed;top:50px;left:10px;background:#020617;
-  padding:12px;border-radius:12px;display:none;z-index:999;
-  box-shadow:0 0 25px #ff00aa;
+ position:fixed;top:50px;left:10px;background:#020617;
+ padding:12px;border-radius:12px;display:none;
+ z-index:999;box-shadow:0 0 25px #ff00aa;
 }
 .menu-box.show{display:block}
+
 .logo-top{
-  width:110px;display:block;margin:10px auto;border-radius:20px;
-  box-shadow:0 0 20px #ff00aa;
+ width:110px;display:block;margin:10px auto;
+ border-radius:20px;box-shadow:0 0 20px #ff00aa;
 }
-.title{text-align:center;font-size:24px;text-shadow:0 0 10px #ff00aa;}
+
+.title{text-align:center;font-size:22px;text-shadow:0 0 10px #ff00aa;}
 .container{padding:20px}
+
 .card{
-  background:rgba(0,0,0,0.6);
-  backdrop-filter:blur(10px);
-  padding:15px;border-radius:15px;margin-top:15px;
-  box-shadow:0 0 40px #ff00aa;
+ background:rgba(0,0,0,0.6);
+ backdrop-filter:blur(10px);
+ padding:15px;border-radius:15px;margin-top:15px;
+ box-shadow:0 0 40px #ff00aa;
 }
+
 .input{
-  width:100%;padding:12px;margin-top:10px;border:none;
-  border-radius:10px;background:#111;color:white;
+ width:100%;padding:12px;margin-top:10px;border:none;
+ border-radius:10px;background:#111;color:white;
 }
-.role-box{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
 .role{
-  padding:12px;background:#111;border-radius:10px;
-  text-align:center;cursor:pointer;
+ padding:10px;background:#111;margin-top:5px;
+ border-radius:10px;cursor:pointer;text-align:center;
 }
 .role.active{background:#ff00aa}
-.harga{color:yellow;margin-top:10px;font-weight:bold}
+
 .btn{
-  width:100%;padding:12px;margin-top:10px;border:none;
-  border-radius:10px;background:#ff00aa;color:white;
+ width:100%;padding:12px;margin-top:10px;border:none;
+ border-radius:10px;background:#ff00aa;color:white;
 }
+
 .item{
-  background:#020617;padding:12px;border-radius:10px;margin-top:10px;
+ background:#020617;padding:12px;border-radius:10px;margin-top:10px;
 }
-.pending{color:orange;}
+
 .valid{color:lime;}
-.tolak{color:red;}
-.toast{
-  position:fixed;top:20px;right:20px;background:#111;
-  padding:10px;border-radius:10px;display:none;
-  box-shadow:0 0 20px #ff00aa;
-}
-img{width:100%;margin-top:10px;border-radius:10px}
+.gagal{color:red;}
 </style>
 </head>
 
@@ -73,223 +72,197 @@ img{width:100%;margin-top:10px;border-radius:10px}
 
 <div class="overlay"></div>
 
-<div class="menu" onclick="toggleMenu()">☰</div>
+<div class="menu" onclick="menuBox.classList.toggle('show')">☰</div>
 
 <div class="menu-box" id="menuBox">
-  👤 VIP USER
-  <hr>
-  <p onclick="logout()" style="color:red;">Logout</p>
+ VIP USER
+ <hr>
+ <p onclick="location.reload()" style="color:red;">Logout</p>
 </div>
-
-<div class="toast" id="toast"></div>
 
 <div class="container">
 
 <img src="logo.png" class="logo-top">
 <div class="title">💗 VIP USER PANEL</div>
 
+<!-- ANALISIS -->
 <div class="card">
-<h3>📊 Statistik</h3>
-<div id="stat"></div>
+<h3>📊 Analisis Sistem</h3>
+<div id="analisis"></div>
 </div>
 
+<!-- 🔥 VIDEO FIX -->
+<div class="card">
+<video autoplay muted loop playsinline onclick="this.paused?this.play():this.pause()" style="width:100%;border-radius:10px">
+  <source src="kotak video anime.mp4" type="video/mp4">
+</video>
+</div>
+
+<!-- FORM -->
 <div class="card">
 <h3>Buat Akun</h3>
 
 <input id="username" class="input" placeholder="Username">
 <input id="password" class="input" placeholder="Password">
 
-<input type="file" id="file" class="input">
-<img id="preview" style="display:none">
+<div class="role" onclick="pilih(this,'OWNER')">OWNER</div>
+<div class="role" onclick="pilih(this,'RESELLER')">RESELLER</div>
+<div class="role" onclick="pilih(this,'VIP')">VIP</div>
+<div class="role" onclick="pilih(this,'MEMBER')">MEMBER</div>
 
-<div class="role-box">
-<div class="role" onclick="selectRole(this,'OWNER')">OWNER</div>
-<div class="role" onclick="selectRole(this,'RESELLER')">RESELLER</div>
-<div class="role" onclick="selectRole(this,'VIP')">VIP</div>
-<div class="role" onclick="selectRole(this,'MEMBER')">MEMBER</div>
+<button class="btn" onclick="kirim()">📤 Kirim ke Sistem</button>
+
+<p style="font-size:12px;color:yellow">
+⚠️ WAJIB KIRIM BUKTI TRANSAKSI KE ADMIN  
+⚠️ TUNGGU BOT SAMPAI SELESAI  
+</p>
+
 </div>
 
-<div id="harga" class="harga"></div>
-
-<button class="btn" onclick="kirim()">📤 Kirim ke Admin</button>
-</div>
-
+<!-- BOT -->
 <div class="card">
-<input id="search" class="input" placeholder="Cari username..." onkeyup="render()">
+<h3>🤖 Status Bot</h3>
+<button class="btn" onclick="clearBot()">🔄 Refresh Bot</button>
+<div id="bot"></div>
 </div>
 
+<!-- SEARCH -->
 <div class="card">
-<h3>📜 Riwayat</h3>
-<div id="list"></div>
-</div>
-
-<div class="card">
-<h3>🔍 Database Akun</h3>
-<div id=" { user: 'Panjol15', pass: 'Pxxxx' },
-  { user: 'Saiful76', pass: 'sxxxx' },
-  { user: 'zuansuju', pass: 'zxxxx' },
-  { user: 'Golda susu', pass: 'Dxxxx' },
-  { user: 'mrgobed', pass: 'pxxxx' },
-  { user: 'Geromy', pass: 'gxxxx' },
-  { user: 'hanz21', pass: 'hxxxx' }, 
-  { user: 'bima', pass: 'bxxxx' }, 
-  { user: 'shultan123', pass: 'Axxxx' }, 
-  { user: 'Apin25', pass: 'axxxx' }, 
-  { user: 'Ttan', pass: 'jxxxx' }, 
-  { user: 'Termuk', pass: 'sxxxx' }, 
-  { user: 'kodehitam', pass: '5xxxx' }, 
-  { user: 'Erpan', pass: 'exxxx' }, 
-  { user: 'KucingOren', pass: 'Mxxxx' }, 
-  { user: 'muhamad', pass: 'Sxxxx' }, 
-  { user: 'Amrol', pass: 'Axxxx' }, 
-  { user: 'Camel76', pass: 'rxxxx' }, 
-  { user: 'KhaiVia', pass: 'lxxxx' }, 
-  { user: 'Orangbaik', pass: 'Axxxx' }, 
-  { user: 'Minibeatss', pass: 'mxxxx' }, 
-  { user: 'iziboy87', pass: 'axxxx' }, 
-  { user: 'Orangbaik', pass: 'Axxxx' }, 
-  { user: 'Athansius', pass: 'ixxxx' }, 
-  { user: 'ROAX', pass: '1xxxx' }, 
-  { user: 'Febby19', pass: 'Fxxxx' }, 
-  { user: 'Mister_10', pass: 'mxxxx' }, 
-  { user: 'jojo', pass: 'jxxxx' }, 
-  { user: 'JojaPoHack', pass: 'Hxxxx' }, 
-  { user: 'rizkifa', pass: 'rxxxx' }, 
-  { user: 'spamwa', pass: 'sxxxx' }, 
-  { user: 'ARZLEN', pass: 'Axxxx' }, 
-  { user: 'sanuxfai', pass: '1xxxx' }, 
-  { user: 'Termuk', pass: 'sxxxx' }, 
-  { user: 'Bjorka', pass: 'rxxxx' }, 
-  { user: 'Malik1234', pass: 'Mxxxx' }, 
-  { user: 'Akbar66', pass: 'Sxxxx' }, 
-  { user: 'Santra', pass: 'sxxxx' }, 
-  { user: 'suryadik0102', pass: '0xxxx' }, 
-  { user: 'raditya', pass: 'rxxxx' }, 
-  { user: 'dione', pass: 'Sxxxx' }, 
-  { user: 'yoga555', pass: '1xxxx' }, 
-  { user: 'Konten', pass: '1xxxx' }, 
-  { user: 'Yuri99', pass: 'Txxxx' }"></div>
+<h3>🔍 Pencarian Akun</h3>
+<input id="search" class="input" placeholder="Cari username..." oninput="renderAkun()">
+<div id="akunList"></div>
 </div>
 
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+<script>
 
-const firebaseConfig = {
- apiKey: "AIzaSyA0NJaW-W50zCvJEiU4Zp2I",
- databaseURL: "https://vip-user-system-123-default-rtdb.firebaseio.com",
- projectId: "vip-user-system-123"
-};
+let role="";
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-// 🔥 AKUN LIST FULL
-let akunList = [/* (isi lengkap sama yg lu kasih tadi) */];
-
-function sensor(p){ return p ? p[0]+"xxxx" : ""; }
-
-window.toggleMenu=()=>menuBox.classList.toggle("show");
-window.logout=()=>location.reload();
-
-let role="", harga=0, img="";
-let dataAll=[];
-let lastStatus={};
-
-window.selectRole=function(el,r){
+function pilih(el,r){
  document.querySelectorAll(".role").forEach(x=>x.classList.remove("active"));
  el.classList.add("active");
  role=r;
-
- if(r=="OWNER") harga=100000;
- if(r=="RESELLER") harga=70000;
- if(r=="VIP") harga=60000;
- if(r=="MEMBER") harga=40000;
-
- hargaEl.innerHTML="💰 Rp "+harga.toLocaleString("id-ID");
 }
 
-file.onchange=e=>{
- let r=new FileReader();
- r.onload=()=>{
-  img=r.result;
-  preview.src=img;
-  preview.style.display="block";
- };
- r.readAsDataURL(e.target.files[0]);
-};
+// DATA AKUN
+let akunData=[
+ {user:'Panjol15',pass:'Panjol15'},
+ {user:'Saiful76',pass:'saiful76'},
+ {user:'zuansuju',pass:'zuan07'},
+ {user:'Geromy',pass:'geromy123'},
+ {user:'bima',pass:'bima.123@'},
+ {user:'Termuk',pass:'spamwa'}
+];
 
-window.kirim=function(){
- if(!username.value||!password.value||!role||!img){
-  toast("Lengkapi semua!");
+function sensor(p){return p?p[0]+"xxxx":""}
+
+function renderAkun(){
+ let s=search.value.toLowerCase();
+ let hasil=akunData.filter(a=>a.user.toLowerCase().includes(s));
+
+ akunList.innerHTML=hasil.map(a=>`
+ <div class="item" onclick="isi('${a.user}','${a.pass}')">
+ 👤 ${a.user}<br>
+ 🔒 ${sensor(a.pass)}<br>
+ <span style="color:lime">✔</span> VIP
+ </div>
+ `).join("")||"<div class='item'>Tidak ditemukan</div>";
+}
+
+function isi(u,p){
+ username.value=u;
+ password.value=p;
+}
+
+// KIRIM
+function kirim(){
+ if(!username.value||!password.value||!role){
+  alert("Lengkapi!");
   return;
  }
 
- push(ref(db,"permohonan"),{
+ let data=JSON.parse(localStorage.getItem("botdata"))||[];
+
+ data.push({
   username:username.value,
-  password:password.value,
   role:role,
-  harga:harga,
-  img:img,
-  status:"Pending",
-  waktu:new Date().toLocaleString()
+  step:0,
+  status:"pending",
+  waktu:new Date().toLocaleString(),
+  sent:false
  });
 
- toast("📤 Dikirim!");
+ localStorage.setItem("botdata",JSON.stringify(data));
+ render();
 }
 
-onValue(ref(db,"permohonan"),snap=>{
- dataAll=[];
- snap.forEach(c=>{
-  let id=c.key;
-  let d=c.val();
+// BOT + WA
+setInterval(()=>{
+ let data=JSON.parse(localStorage.getItem("botdata"))||[];
 
-  if(lastStatus[id] && lastStatus[id]!=d.status){
-   if(d.status=="Approved"){
-    alert("⚠️ WAJIB KIRIM TRANSAKSI!");
-    let msg=`✅ DISETUJUI\nUser: ${d.username}\nRole: ${d.role}\nStatus: AKTIF\nWaktu: ${d.waktu}`;
-    window.open(`https://wa.me/6281385998324?text=${encodeURIComponent(msg)}`);
+ data.forEach(d=>{
+  if(d.sent) return;
+
+  if(d.step===0) d.step=1;
+  else if(d.step===1) d.step=2;
+  else if(d.step===2){
+   d.status=Math.random()>0.3?"valid":"gagal";
+   d.sent=true;
+
+   if(d.status==="valid"){
+    let pesan=`✅ DISETUJUI
+
+User: ${d.username}
+Role: ${d.role}
+Status: AKTIF
+Waktu: ${d.waktu}`;
+
+    window.open("https://wa.me/6281385998324?text="+encodeURIComponent(pesan));
    }
   }
-
-  lastStatus[id]=d.status;
-  dataAll.push(d);
  });
 
+ localStorage.setItem("botdata",JSON.stringify(data));
  render();
-});
 
-window.render=function(){
- let s=search.value.toLowerCase();
+},2000);
 
- let data=dataAll.filter(d=>d.username.toLowerCase().includes(s));
+// RENDER
+function render(){
 
- let pending=data.filter(d=>d.status==="Pending").length;
- let ok=data.filter(d=>d.status==="Approved").length;
- let no=data.filter(d=>d.status==="Rejected").length;
+ let data=JSON.parse(localStorage.getItem("botdata"))||[];
 
- stat.innerHTML=`⏳ ${pending} | ✔ ${ok} | ❌ ${no}`;
+ bot.innerHTML=data.map(d=>{
+ let status="";
 
- list.innerHTML=data.map(d=>`
- <div class="item">
- ${d.username} (${d.role})<br>
- ${d.status}
- <img src="${d.img}">
- </div>
- `).join("");
+ if(d.step===0) status="⏳ Sedang diproses...";
+ else if(d.step===1) status="<span style='color:yellow'>🟡 Sedang verifikasi...</span>";
+ else status=d.status==="valid"
+  ? "<span class='valid'>✔ Valid</span>"
+  : "<span class='gagal'>❌ Tidak valid</span>";
 
- akunListView.innerHTML=akunList
- .filter(a=>a.user.toLowerCase().includes(s))
- .map(a=>`
- <div class="item">
- 👤 ${a.user}<br>
- 🔒 ${sensor(a.pass)}
- </div>
- `).join("");
+ return `<div class="item">${d.username}<br>${status}</div>`;
+ }).join("");
+
+ analisis.innerHTML=`
+ 👤 User: ${data.length?data[data.length-1].username:"-"}<br>
+ 📦 Total: ${data.length}<br>
+ ⏳ Pending: ${data.filter(d=>!d.sent).length}<br>
+ ✔ Valid: ${data.filter(d=>d.status==="valid").length}<br>
+ 🌐 ${navigator.onLine?"🟢 Online":"🔴 Offline"}
+ `;
 }
+
+function clearBot(){
+ localStorage.removeItem("botdata");
+ render();
+}
+
+render();
+renderAkun();
+
 </script>
 
 </body>
-</html>  
+</html>
