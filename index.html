@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VIP USER SYSTEM MAX</title>
+<title>VIP USER DEWA</title>
 
 <style>
 body{
@@ -12,80 +12,122 @@ body{
   color:white;
   background:url('begron.png') no-repeat center;
   background-size:cover;
+  overflow-x:hidden;
 }
+
+/* 🌸 SAKURA */
+.sakura{
+  position:fixed;
+  top:-10px;
+  width:12px;
+  height:12px;
+  background:pink;
+  border-radius:50%;
+  opacity:0.7;
+  animation:fall linear infinite;
+}
+@keyframes fall{
+  to{transform:translateY(110vh) rotate(360deg);}
+}
+
 .overlay{
   position:fixed;
   width:100%;
   height:100%;
-  background:rgba(0,0,0,0.75);
+  background:rgba(0,0,0,0.7);
   z-index:-1;
 }
+
 .container{padding:20px}
+
 .card{
   background:rgba(0,0,0,0.6);
   padding:15px;
   border-radius:15px;
   margin-top:15px;
   box-shadow:0 0 40px #ff00aa;
+  transition:0.3s;
 }
+.card:hover{transform:scale(1.02)}
+
 .input{
   width:100%;
   padding:12px;
   margin-top:10px;
-  border:none;
-  border-radius:10px;
   background:#111;
   color:white;
+  border:none;
+  border-radius:10px;
 }
-.role-box{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
+
+.role-box{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .role{
   padding:12px;
   background:#111;
   border-radius:10px;
   text-align:center;
+  cursor:pointer;
 }
 .role.active{background:#ff00aa}
+
 .btn{
   width:100%;
   padding:12px;
   margin-top:10px;
+  background:#ff00aa;
   border:none;
   border-radius:10px;
-  background:#ff00aa;
   color:white;
 }
+
 .item{
   background:#020617;
   padding:12px;
-  border-radius:10px;
   margin-top:10px;
+  border-radius:10px;
 }
-.pending{color:orange;}
-.valid{color:lime;}
-.tolak{color:red;}
+
+.pending{color:orange}
+.valid{color:lime}
+.tolak{color:red}
+
+img{width:100%;margin-top:10px;border-radius:10px}
+
+.toast{
+  position:fixed;
+  top:20px;
+  right:20px;
+  background:#111;
+  padding:10px;
+  border-radius:10px;
+  display:none;
+  box-shadow:0 0 20px #ff00aa;
+}
 </style>
 </head>
 
 <body>
 
 <div class="overlay"></div>
+<div class="toast" id="toast"></div>
 
 <div class="container">
 
-<h2>💗 VIP USER PANEL</h2>
+<h2>💗 VIP USER DEWA PANEL</h2>
 
+<!-- STAT -->
 <div class="card">
-<h3>Buat Akun</h3>
+<h3>📊 Statistik</h3>
+<div id="stat"></div>
+</div>
 
+<!-- FORM -->
+<div class="card">
 <input id="username" class="input" placeholder="Username">
 <input id="password" class="input" placeholder="Password">
 
 <input type="file" id="file" class="input">
-<img id="preview" style="width:100%;display:none">
+<img id="preview" style="display:none">
 
 <div class="role-box">
 <div class="role" onclick="selectRole(this,'OWNER',100000)">OWNER</div>
@@ -94,13 +136,16 @@ body{
 
 <div id="harga"></div>
 
-<button class="btn" onclick="kirim()">Kirim ke Admin</button>
+<button class="btn" onclick="kirim()">🔥 Kirim</button>
 </div>
 
+<!-- SEARCH -->
 <div class="card">
-<h3>Riwayat</h3>
-<div id="list"></div>
+<input id="search" class="input" placeholder="Cari..." onkeyup="load()">
 </div>
+
+<!-- LIST -->
+<div id="list"></div>
 
 </div>
 
@@ -120,12 +165,30 @@ const db = getDatabase(app);
 
 let role="", harga=0, img="";
 
+// 🌸 sakura
+setInterval(()=>{
+ let s=document.createElement("div");
+ s.className="sakura";
+ s.style.left=Math.random()*100+"vw";
+ s.style.animationDuration=(3+Math.random()*5)+"s";
+ document.body.appendChild(s);
+ setTimeout(()=>s.remove(),8000);
+},300);
+
+// toast
+function toast(msg){
+ let t=document.getElementById("toast");
+ t.innerText=msg;
+ t.style.display="block";
+ setTimeout(()=>t.style.display="none",2000);
+}
+
 window.selectRole = function(el,r,h){
  document.querySelectorAll(".role").forEach(x=>x.classList.remove("active"));
  el.classList.add("active");
  role=r;
  harga=h;
- document.getElementById("harga").innerHTML="Rp "+h;
+ hargaEl.innerHTML="💰 Rp "+h;
 }
 
 file.onchange=e=>{
@@ -138,19 +201,15 @@ file.onchange=e=>{
  r.readAsDataURL(e.target.files[0]);
 };
 
-// 🔥 FIX KIRIM
 window.kirim = function(){
- let u=username.value;
- let p=password.value;
-
- if(!u||!p||!role||!img){
-  alert("Lengkapi semua!");
+ if(!username.value||!password.value||!role||!img){
+  toast("Lengkapi semua!");
   return;
  }
 
  push(ref(db,"permohonan"),{
-  username:u,
-  password:p,
+  username:username.value,
+  password:password.value,
   role:role,
   harga:harga,
   img:img,
@@ -158,27 +217,45 @@ window.kirim = function(){
   waktu:new Date().toLocaleString()
  });
 
- alert("🔥 Berhasil!");
+ toast("🔥 Dikirim!");
+};
+
+// load
+function load(){
+ onValue(ref(db,"permohonan"),snap=>{
+  let data=[];
+  snap.forEach(c=>data.push(c.val()));
+
+  stat.innerHTML=`
+  ⏳ ${data.filter(d=>d.status=="Pending").length} |
+  ✔ ${data.filter(d=>d.status=="Approved").length} |
+  ❌ ${data.filter(d=>d.status=="Rejected").length}
+  `;
+
+  let s=search.value.toLowerCase();
+
+  list.innerHTML=data
+  .filter(d=>d.username.toLowerCase().includes(s))
+  .map(d=>{
+
+  let status="";
+  if(d.status=="Pending") status="<span class='pending'>⏳ Pending</span>";
+  if(d.status=="Approved") status="<span class='valid'>✔ Valid</span>";
+  if(d.status=="Rejected") status="<span class='tolak'>❌ Ditolak</span>";
+
+  return `
+  <div class="item">
+  <b>${d.username}</b> (${d.role})<br>
+  💰 Rp ${d.harga}<br>
+  ${status}
+  <img src="${d.img}">
+  </div>`;
+  }).join("");
+
+ });
 }
 
-// 🔥 LOAD REALTIME
-onValue(ref(db,"permohonan"),(snap)=>{
- let html="";
- snap.forEach(c=>{
-  let d=c.val();
-
-  html+=`
-  <div class="item">
-  <b>${d.username}</b><br>
-  ${d.role}<br>
-  Status: ${d.status}
-  <img src="${d.img}">
-  </div>
-  `;
- });
-
- document.getElementById("list").innerHTML=html;
-});
+load();
 </script>
 
 </body>
