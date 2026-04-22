@@ -236,15 +236,7 @@ file.onchange=e=>{
  r.readAsDataURL(f);
 };
 
-function kirim(){
- if(!username.value||!password.value||!role||!img){
-  toast("Lengkapi semua!");
-  return;
- }
-
- let data=JSON.parse(localStorage.getItem("permohonan"))||[];
-
- data.push({
+push(ref(db,"permohonan"),{
   username:username.value,
   password:password.value,
   role:role,
@@ -252,67 +244,66 @@ function kirim(){
   img:img,
   status:"Pending",
   waktu:new Date().toLocaleString()
- });
+});
 
- localStorage.setItem("permohonan",JSON.stringify(data));
+toast("📤 Dikirim ke admin!");
 
- toast("📤 Dikirim ke admin!");
+username.value="";
+password.value="";
+preview.style.display="none";
+hargaEl.innerHTML="";
+  }   
 
- username.value="";
- password.value="";
- preview.style.display="none";
- hargaEl.innerHTML="";
-
- load();
+window.hapus = function(){
+ remove(ref(db,"permohonan"));
 }
 
-function hapus(){
- localStorage.removeItem("permohonan");
- load();
-}
-
+  
 function load(){
- let data=JSON.parse(localStorage.getItem("permohonan"))||[];
- let search=document.getElementById("search").value.toLowerCase();
+ onValue(ref(db,"permohonan"),snap=>{
+  let data=[];
+  snap.forEach(c=>data.push(c.val()));
 
- let pending=data.filter(d=>d.status==="Pending").length;
- let ok=data.filter(d=>d.status==="Approved").length;
- let no=data.filter(d=>d.status==="Ditolak").length;
- let total=data.length;
- let uang=data.reduce((a,b)=>a+b.harga,0);
+  let search=document.getElementById("search").value.toLowerCase();
 
- stat.innerHTML=`
- ⏳ Pending: ${pending}<br>
- ✔ Approved: ${ok}<br>
- ❌ Ditolak: ${no}<br>
- 👤 Total: ${total}<br>
- 💰 Rp ${uang.toLocaleString("id-ID")}
- `;
+  let pending=data.filter(d=>d.status==="Pending").length;
+  let ok=data.filter(d=>d.status==="Approved").length;
+  let no=data.filter(d=>d.status==="Rejected").length;
+  let total=data.length;
+  let uang=data.reduce((a,b)=>a+(b.harga||0),0);
 
- list.innerHTML=data
- .filter(d=>d.username.toLowerCase().includes(search))
- .slice().reverse()
- .map(d=>{
-
- let status="";
-
- if(d.status==="Pending"){
-  status=`<span class="pending">⏳ Menunggu admin...</span>`;
- }
-
- if(d.status==="Approved"){
-  status=`
-  <span class="valid">✔ VALID</span><br>
-  ✔ Akun telah dibuat<br>
-  👤 ${d.username}<br>
-  🔒 ${d.password}<br>
-  📅 ${d.waktu}
+  stat.innerHTML=`
+  ⏳ Pending: ${pending}<br>
+  ✔ Approved: ${ok}<br>
+  ❌ Ditolak: ${no}<br>
+  👤 Total: ${total}<br>
+  💰 Rp ${uang.toLocaleString("id-ID")}
   `;
- }
 
- if(d.status==="Ditolak"){
-  status=`<span class="tolak">❌ Ditolak</span>`;
- }
+  list.innerHTML=data
+  .filter(d=>d.username.toLowerCase().includes(search))
+  .map(d=>{
+
+  let status="";
+  if(d.status==="Pending") status="<span class='pending'>⏳ Pending</span>";
+  if(d.status==="Approved") status="<span class='valid'>✔ Valid</span>";
+  if(d.status==="Rejected") status="<span class='tolak'>❌ Ditolak</span>";
+
+  return `
+  <div class="item">
+  <b>${d.username}</b><br>
+  ${d.password}<br>
+  ${d.waktu}<br>
+  ${status}
+  <img src="${d.img}">
+  </div>
+  `;
+  }).join("");
+
+ });
+}
+
+load();
 
  return `
  <div class="item">
@@ -327,16 +318,14 @@ function load(){
 
 load();
 
-// 🔥 AUTO UPDATE DARI ADMIN
-let lastData="";
-setInterval(()=>{
- let now=localStorage.getItem("permohonan");
- if(lastData && lastData!==now){
+let pertama=true;
+
+onValue(ref(db,"permohonan"),snap=>{
+ if(!pertama){
    toast("🔔 Data diperbarui admin!");
  }
- lastData=now;
- load();
-},2000);
+ pertama=false;
+});
 
 </script>
 
