@@ -3,22 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VIP USER SYSTEM</title>
+<title>VIP USER PRO MAX</title>
 
 <style>
 body{
   margin:0;
   font-family:Arial;
-  background:#0b0f1a;
+  background:#05070f;
   color:white;
 }
 .container{padding:20px}
+
 .card{
-  background:#111827;
+  background:rgba(17,24,39,0.9);
   padding:15px;
   border-radius:15px;
   margin-top:15px;
+  box-shadow:0 0 25px #ff00aa55;
 }
+
 .input,.btn{
   width:100%;
   padding:12px;
@@ -26,21 +29,64 @@ body{
   border:none;
   border-radius:10px;
 }
-.input{background:#1f2937;color:white}
-.btn{background:#ff00aa;color:white}
-.role{background:#1f2937;padding:10px;margin-top:5px;border-radius:10px;cursor:pointer}
-.role.active{background:#ff00aa}
-img{width:100%;border-radius:10px;margin-top:10px}
-</style>
 
+.input{background:#111827;color:white}
+.btn{background:#ff00aa;color:white;cursor:pointer}
+
+.role{
+  background:#111827;
+  padding:10px;
+  margin-top:5px;
+  border-radius:10px;
+  cursor:pointer;
+}
+.role.active{background:#ff00aa}
+
+img{width:100%;margin-top:10px;border-radius:10px}
+
+.status-p{color:orange}
+.status-a{color:lime}
+.status-r{color:red}
+
+.topbar{
+  background:#111;
+  padding:10px;
+  text-align:center;
+  font-weight:bold;
+  box-shadow:0 0 20px #ff00aa;
+}
+
+.toast{
+  position:fixed;
+  top:20px;
+  right:20px;
+  background:#111;
+  padding:10px;
+  border-radius:10px;
+  display:none;
+  box-shadow:0 0 20px #ff00aa;
+}
+</style>
 </head>
+
 <body>
+
+<div class="topbar">🔥 VIP USER PRO MAX</div>
+
+<div class="toast" id="toast"></div>
 
 <div class="container">
 
-<h2>🔥 VIP USER PANEL</h2>
-
+<!-- 📊 STAT -->
 <div class="card">
+<h3>📊 Statistik</h3>
+<div id="stat"></div>
+</div>
+
+<!-- 🧾 FORM -->
+<div class="card">
+<h3>📝 Buat Permohonan</h3>
+
 <input id="username" class="input" placeholder="Username">
 <input id="password" class="input" placeholder="Password">
 
@@ -54,20 +100,27 @@ img{width:100%;border-radius:10px;margin-top:10px}
 
 <div id="harga"></div>
 
-<button class="btn" onclick="kirim()">📤 Kirim ke Admin</button>
+<button class="btn" onclick="kirim()">📤 Kirim</button>
+<button class="btn" onclick="resetForm()">♻️ Reset</button>
 </div>
 
+<!-- 🔍 SEARCH -->
 <div class="card">
-<h3>📜 Riwayat</h3>
+<input id="search" class="input" placeholder="Cari username..." onkeyup="render()">
+</div>
+
+<!-- 📜 LIST -->
 <div id="list"></div>
-</div>
 
 </div>
 
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"></script>
 
 <script>
+
+// 🔥 CONFIG
 const firebaseConfig = {
   apiKey: "ISI_APIKEY",
   authDomain: "ISI",
@@ -79,15 +132,26 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 let role="", harga=0, img="";
+let allData=[];
 
+// 🔔 TOAST
+function toast(msg){
+ let t=toastEl=document.getElementById("toast");
+ t.innerText=msg;
+ t.style.display="block";
+ setTimeout(()=>t.style.display="none",2000);
+}
+
+// 🎭 ROLE
 function setRole(r,h,el){
  document.querySelectorAll(".role").forEach(x=>x.classList.remove("active"));
  el.classList.add("active");
  role=r;
  harga=h;
- document.getElementById("harga").innerHTML="💰 Rp "+h;
+ hargaEl.innerHTML="💰 Rp "+h.toLocaleString("id-ID");
 }
 
+// 🖼️ FILE
 file.onchange=e=>{
  let f=e.target.files[0];
  let r=new FileReader();
@@ -99,9 +163,10 @@ file.onchange=e=>{
  r.readAsDataURL(f);
 };
 
+// 📤 KIRIM
 function kirim(){
  if(!username.value||!password.value||!role||!img){
-  alert("Lengkapi semua!");
+  toast("Lengkapi semua!");
   return;
  }
 
@@ -115,33 +180,81 @@ function kirim(){
   waktu:new Date().toLocaleString()
  });
 
- alert("🔥 Berhasil dikirim!");
-
- username.value="";
- password.value="";
- preview.style.display="none";
+ toast("🔥 Berhasil dikirim!");
+ resetForm();
 }
 
+// 🔄 RESET
+function resetForm(){
+ username.value="";
+ password.value="";
+ role="";
+ harga=0;
+ img="";
+ preview.style.display="none";
+ document.querySelectorAll(".role").forEach(x=>x.classList.remove("active"));
+ hargaEl.innerHTML="";
+}
+
+// 📥 LOAD
 function load(){
  db.ref("permohonan").on("value",(snap)=>{
-  let html="";
+  allData=[];
   snap.forEach(c=>{
-    let d=c.val();
-
-    html+=`
-    <div class="card">
-    <b>${d.username}</b> (${d.role})<br>
-    💰 Rp ${d.harga}<br>
-    Status: ${d.status}<br>
-    <img src="${d.img}">
-    </div>
-    `;
+    allData.push({id:c.key,...c.val()});
   });
-  list.innerHTML=html;
+  render();
  });
 }
 
+// 🎨 RENDER
+function render(){
+ let search=document.getElementById("search").value.toLowerCase();
+
+ let pending=allData.filter(d=>d.status=="Pending").length;
+ let ok=allData.filter(d=>d.status=="Approved").length;
+ let no=allData.filter(d=>d.status=="Rejected").length;
+
+ stat.innerHTML=`
+ ⏳ ${pending} Pending<br>
+ ✔ ${ok} Approved<br>
+ ❌ ${no} Rejected<br>
+ 👤 Total ${allData.length}
+ `;
+
+ list.innerHTML=allData
+ .filter(d=>d.username.toLowerCase().includes(search))
+ .slice().reverse()
+ .map(d=>{
+
+ let statusClass=
+  d.status=="Pending"?"status-p":
+  d.status=="Approved"?"status-a":
+  "status-r";
+
+ return `
+ <div class="card">
+ <b>${d.username}</b> (${d.role})<br>
+ 💰 Rp ${d.harga}<br>
+ <span class="${statusClass}">${d.status}</span><br>
+ <img src="${d.img}">
+
+ <button class="btn" onclick="hapus('${d.id}')">🗑️ Hapus</button>
+ </div>
+ `;
+ }).join("");
+}
+
+// 🗑️ HAPUS
+function hapus(id){
+ if(confirm("Hapus data?")){
+  db.ref("permohonan/"+id).remove();
+ }
+}
+
+// 🚀 INIT
 load();
+
 </script>
 
 </body>
