@@ -1,30 +1,31 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VIP USER ULTRA PANEL</title>
+<title>VIP USER MODERN</title>
 
 <style>
 body{
   margin:0;
   font-family:Arial;
-  background:#05070f;
+  background:linear-gradient(135deg,#05070f,#0b0f1a);
   color:white;
 }
 
-.topbar{
-  background:#111;
-  padding:15px;
+.header{
   text-align:center;
-  font-size:20px;
+  padding:15px;
+  font-size:22px;
+  background:#111;
   box-shadow:0 0 20px #ff00aa;
 }
 
 .container{padding:15px}
 
 .card{
-  background:rgba(17,24,39,0.95);
+  background:rgba(17,24,39,0.8);
+  backdrop-filter:blur(10px);
   padding:15px;
   border-radius:15px;
   margin-top:15px;
@@ -40,37 +41,19 @@ body{
 }
 
 .input{background:#1f2937;color:white}
-
-.btn{
-  background:#ff00aa;
-  color:white;
-  cursor:pointer;
-}
+.btn{background:#ff00aa;color:white}
 
 .role{
   background:#1f2937;
   padding:10px;
   margin-top:5px;
   border-radius:10px;
+  text-align:center;
   cursor:pointer;
 }
 .role.active{background:#ff00aa}
 
-img{
-  width:100%;
-  border-radius:10px;
-  margin-top:10px;
-}
-
-.status-p{color:orange}
-.status-a{color:lime}
-.status-r{color:red}
-
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
+img{width:100%;margin-top:10px;border-radius:10px}
 
 .toast{
   position:fixed;
@@ -80,25 +63,22 @@ img{
   padding:10px;
   border-radius:10px;
   display:none;
-  box-shadow:0 0 20px #ff00aa;
 }
 </style>
 </head>
 
 <body>
 
-<div class="topbar">🔥 VIP USER ULTRA PANEL</div>
+<div class="header">🔥 VIP USER MODERN</div>
 <div class="toast" id="toast"></div>
 
 <div class="container">
 
-<!-- STAT -->
 <div class="card">
 <h3>📊 Statistik</h3>
 <div id="stat"></div>
 </div>
 
-<!-- FORM -->
 <div class="card">
 <h3>📝 Buat Permohonan</h3>
 
@@ -108,31 +88,20 @@ img{
 <input type="file" id="file" class="input">
 <img id="preview" style="display:none">
 
-<div class="grid">
 <div class="role" onclick="setRole('OWNER',100000,this)">OWNER</div>
 <div class="role" onclick="setRole('RESELLER',70000,this)">RESELLER</div>
 <div class="role" onclick="setRole('VIP',60000,this)">VIP</div>
 <div class="role" onclick="setRole('MEMBER',40000,this)">MEMBER</div>
-</div>
 
 <div id="harga"></div>
 
 <button class="btn" onclick="kirim()">📤 Kirim</button>
-<button class="btn" onclick="resetForm()">♻️ Reset</button>
 </div>
 
-<!-- SEARCH -->
 <div class="card">
-<input id="search" class="input" placeholder="Cari username..." onkeyup="render()">
-<select id="filter" class="input" onchange="render()">
-<option value="all">Semua</option>
-<option value="Pending">Pending</option>
-<option value="Approved">Approved</option>
-<option value="Rejected">Rejected</option>
-</select>
+<input id="search" class="input" placeholder="Cari..." onkeyup="render()">
 </div>
 
-<!-- LIST -->
 <div id="list"></div>
 
 </div>
@@ -143,7 +112,6 @@ img{
 
 <script>
 
-// 🔥 CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyA0NJaW-W50zCvJEiU4Zp2I",
   authDomain: "vip-user-system-123.firebaseapp.com",
@@ -160,7 +128,6 @@ const db = firebase.database();
 let role="", harga=0, img="";
 let allData=[];
 
-// TOAST
 function toast(msg){
  let t=document.getElementById("toast");
  t.innerText=msg;
@@ -168,28 +135,24 @@ function toast(msg){
  setTimeout(()=>t.style.display="none",2000);
 }
 
-// ROLE
 function setRole(r,h,el){
  document.querySelectorAll(".role").forEach(x=>x.classList.remove("active"));
  el.classList.add("active");
  role=r;
  harga=h;
- document.getElementById("harga").innerHTML="💰 Rp "+h.toLocaleString("id-ID");
+ document.getElementById("harga").innerHTML="💰 Rp "+h;
 }
 
-// FILE
 file.onchange=e=>{
- let f=e.target.files[0];
- let r=new FileReader();
- r.onload=()=>{
-  img=r.result;
+ let reader=new FileReader();
+ reader.onload=()=>{
+  img=reader.result;
   preview.src=img;
   preview.style.display="block";
  };
- r.readAsDataURL(f);
+ reader.readAsDataURL(e.target.files[0]);
 };
 
-// KIRIM
 function kirim(){
  if(!username.value||!password.value||!role||!img){
   toast("Lengkapi semua!");
@@ -207,82 +170,44 @@ function kirim(){
  });
 
  toast("🔥 Berhasil dikirim!");
- resetForm();
-}
-
-// RESET
-function resetForm(){
  username.value="";
  password.value="";
- role="";
- harga=0;
- img="";
  preview.style.display="none";
- document.querySelectorAll(".role").forEach(x=>x.classList.remove("active"));
- document.getElementById("harga").innerHTML="";
 }
 
-// LOAD
 function load(){
  db.ref("permohonan").on("value",(snap)=>{
   allData=[];
   snap.forEach(c=>{
-    allData.push({id:c.key,...c.val()});
+    allData.push(c.val());
   });
   render();
  });
 }
 
-// RENDER
 function render(){
- let search=document.getElementById("search").value.toLowerCase();
- let filter=document.getElementById("filter").value;
-
- let data=allData
-  .filter(d=>d.username.toLowerCase().includes(search))
-  .filter(d=>filter==="all"||d.status===filter);
+ let s=document.getElementById("search").value.toLowerCase();
 
  let pending=allData.filter(d=>d.status=="Pending").length;
  let ok=allData.filter(d=>d.status=="Approved").length;
  let no=allData.filter(d=>d.status=="Rejected").length;
 
  stat.innerHTML=`
- ⏳ ${pending} Pending<br>
- ✔ ${ok} Approved<br>
- ❌ ${no} Rejected<br>
- 👤 Total ${allData.length}
+ ⏳ ${pending} | ✔ ${ok} | ❌ ${no} | 👤 ${allData.length}
  `;
 
- list.innerHTML=data
- .slice().reverse()
- .map(d=>{
-
- let sClass=
-  d.status=="Pending"?"status-p":
-  d.status=="Approved"?"status-a":
-  "status-r";
-
- return `
+ list.innerHTML=allData
+ .filter(d=>d.username.toLowerCase().includes(s))
+ .map(d=>`
  <div class="card">
  <b>${d.username}</b> (${d.role})<br>
  💰 Rp ${d.harga}<br>
- <span class="${sClass}">${d.status}</span><br>
+ Status: ${d.status}<br>
  <img src="${d.img}">
-
- <button class="btn" onclick="hapus('${d.id}')">🗑️ Hapus</button>
  </div>
- `;
- }).join("");
+ `).join("");
 }
 
-// HAPUS
-function hapus(id){
- if(confirm("Hapus data?")){
-  db.ref("permohonan/"+id).remove();
- }
-}
-
-// INIT
 load();
 
 </script>
