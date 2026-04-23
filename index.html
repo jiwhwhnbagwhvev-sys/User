@@ -134,6 +134,18 @@ AMBIL 20%
 <button class="btn btn-reset" onclick="clearBot()">🔄 Refresh Bot</button>
 <div id="bot"></div>
 </div>
+ 
+<div class="card">
+<h3>🎵 Music Player</h3>
+
+<input type="file" id="musicFile" accept=".mp3" class="input">
+
+<div id="playerBox" style="margin-top:10px;display:none">
+  <b id="musicName">-</b><br>
+  <audio id="audio" controls style="width:100%;margin-top:10px"></audio>
+</div>
+
+</div>
 
 <div class="card">
 <h3>🔍 Pencarian Akun</h3>
@@ -214,20 +226,42 @@ let akunData=[
   { user: 'NVthok', pass: 'nxxxxxxxx',role:'VIP'},
   { user: 'Frieren', pass: 'Mxxxxxx',role:'VIP'}
 ];
-  
-function sensor(p){return p?p[0]+"xxxx":""}
 
+// 🔥 MUSIC PLAYER
+document.getElementById("musicFile").onchange = function(e){
+ let file = e.target.files[0];
+ if(!file) return;
+
+ let url = URL.createObjectURL(file);
+
+ let audioEl = document.getElementById("audio");
+ let nameEl = document.getElementById("musicName");
+ let box = document.getElementById("playerBox");
+
+ audioEl.src = url;
+ audioEl.play();
+
+ nameEl.innerText = file.name;
+ box.style.display = "block";
+};
+
+// 🔐 SENSOR PASSWORD
+function sensor(p){
+ return p ? p[0] + "xxxx" : "";
+}
+
+// 🔍 RENDER AKUN
 function renderAkun(){
- let s=search.value.toLowerCase();
- let hasil=akunData.filter(a=>a.user.toLowerCase().includes(s));
+ let s = document.getElementById("search").value.toLowerCase();
+ let hasil = akunData.filter(a => a.user.toLowerCase().includes(s));
 
- akunList.innerHTML=hasil.map(a=>`
+ document.getElementById("akunList").innerHTML = hasil.map(a=>`
  <div class="item" onclick="isi('${a.user}','${a.pass}')">
  👤 ${a.user}<br>
  🔒 ${sensor(a.pass)}<br>
  <span style="color:lime">✔</span> ${a.role}
  </div>
- `).join("")||"<div class='item'>Tidak ditemukan</div>";
+ `).join("") || "<div class='item'>Tidak ditemukan</div>";
 }
 
 function isi(u,p){
