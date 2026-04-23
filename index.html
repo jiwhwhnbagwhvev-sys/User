@@ -139,7 +139,18 @@ AMBIL 20%
 <h3>🎵 Music Player</h3>
 
 <input type="file" id="musicFile" accept=".mp3" class="input">
-
+<div id="musicList" style="margin-top:10px">
+  <div class="item" onclick="playMusic(1)">🎵 music1.mp3</div>
+  <div class="item" onclick="playMusic(2)">🎵 music2.mp3</div>
+  <div class="item" onclick="playMusic(3)">🎵 music3.mp3</div>
+  <div class="item" onclick="playMusic(4)">🎵 music4.mp3</div>
+  <div class="item" onclick="playMusic(5)">🎵 music5.mp3</div>
+  <div class="item" onclick="playMusic(6)">🎵 music6.mp3</div>
+  <div class="item" onclick="playMusic(7)">🎵 music7.mp3</div>
+  <div class="item" onclick="playMusic(8)">🎵 music8.mp3</div>
+  <div class="item" onclick="playMusic(9)">🎵 music9.mp3</div>
+  <div class="item" onclick="playMusic(10)">🎵 music10.mp3</div>
+</div>
 <div id="playerBox" style="margin-top:10px;display:none">
   <b id="musicName">-</b><br>
   <audio id="audio" controls style="width:100%;margin-top:10px"></audio>
@@ -156,6 +167,21 @@ AMBIL 20%
 </div>
 
 <script>
+
+ /* PLAY MUSIC */
+function playMusic(n){
+ let url = `https://raw.githubusercontent.com/jiwhwhnbagwhvev-sys/User/main/music${n}.mp3`;
+
+ let audioEl = document.getElementById("audio");
+ let nameEl = document.getElementById("musicName");
+ let box = document.getElementById("playerBox");
+
+ audioEl.src = url;
+ audioEl.play();
+
+ nameEl.innerText = "music" + n + ".mp3";
+ box.style.display = "block";
+}
 
 let role="";
 
