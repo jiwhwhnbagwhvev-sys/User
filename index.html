@@ -168,8 +168,8 @@ AMBIL 20%
 
 <script>
 
- /* PLAY MUSIC */
 function playMusic(n){
+
  let url = `https://raw.githubusercontent.com/jiwhwhnbagwhvev-sys/User/main/music${n}.mp3`;
 
  let audioEl = document.getElementById("audio");
@@ -181,7 +181,7 @@ function playMusic(n){
 
  nameEl.innerText = "music" + n + ".mp3";
  box.style.display = "block";
-}
+
  // 🔥 LED MERAH (HIGHLIGHT)
  document.querySelectorAll("#musicList .item").forEach(x=>x.classList.remove("active"));
  document.querySelectorAll("#musicList .item")[n-1].classList.add("active");
