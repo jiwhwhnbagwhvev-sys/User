@@ -183,6 +183,30 @@ body{
  <div class="bar"><span></span></div>
 </div>
 
+ <!-- LOGIN -->
+<div id="loginBox">
+  <div class="login-card">
+
+    <h1>Selamat<br>Datang</h1>
+    <div class="sub">Masuk ke akun Anda</div>
+
+    <label>Username</label>
+    <div class="input-box">
+      <span>👤</span>
+      <input id="luser" placeholder="username">
+    </div>
+
+    <label>Password</label>
+    <div class="input-box">
+      <span>🔒</span>
+      <input id="lpass" type="password" placeholder="password">
+    </div>
+
+    <button onclick="login()">➜ Masuk</button>
+
+  </div>
+</div>
+
 <!-- 🔥 LOGIN (SETELAH OPENING) -->
 <div id="loginBox">
  <div class="login-card">
@@ -222,6 +246,51 @@ body{
 <div id="analisis"></div>
 </div>
 
+ /* 🔥 NAH INI TEMPAT KODE LU */
+#opening{
+ position:fixed;top:0;left:0;width:100%;height:100%;
+ background:#0b0f1a;display:flex;align-items:center;justify-content:center;
+ flex-direction:column;z-index:9999;
+ animation:hilang 1s ease forwards;
+ animation-delay:3s;
+}
+
+.bar{width:140px;height:4px;background:#222;margin-top:10px;border-radius:10px;overflow:hidden;}
+.bar span{display:block;height:100%;width:0%;background:#00ff88;animation:load 3s linear forwards;}
+
+@keyframes load{to{width:100%}}
+@keyframes hilang{to{opacity:0;visibility:hidden}}
+
+#loginBox{
+ position:fixed;top:0;left:0;width:100%;height:100%;
+ background:#020617;display:flex;align-items:center;justify-content:center;
+ z-index:9998;opacity:0;pointer-events:none;transition:1s;
+}
+#loginBox.show{opacity:1;pointer-events:auto;}
+
+.login-card{
+ width:85%;max-width:330px;padding:25px;border-radius:25px;
+ background:rgba(10,20,40,0.6);backdrop-filter:blur(15px);
+ box-shadow:0 0 40px rgba(0,150,255,0.2);
+}
+
+.input-box{
+ display:flex;align-items:center;background:#0b1220;
+ border-radius:20px;padding:12px;margin-bottom:15px;
+}
+
+.input-box input{
+ width:100%;background:none;border:none;color:white;outline:none;
+}
+
+.login-card button{
+ width:100%;padding:14px;border:none;border-radius:25px;
+ background:linear-gradient(45deg,#4facfe,#6a82fb);color:white;
+}
+
+</style>
+</head>
+ 
  // 🔥 TAMPIL LOGIN SETELAH OPENING
 setTimeout(()=>{
  document.getElementById("loginBox").classList.add("show");
@@ -232,8 +301,34 @@ setTimeout(()=>{
  let op = document.getElementById("opening");
  if(op) op.remove();
 },7500);
+ 
+// 🔥 LOGIN NYAMBUNG KE akunData
+function login(){
+ let u = document.getElementById("luser").value;
+ let p = document.getElementById("lpass").value;
 
-</script>
+ // cari user di list akun
+ let cek = akunData.find(a => a.user.toLowerCase() === u.toLowerCase());
+
+ if(!cek){
+  alert("User tidak ditemukan ❌");
+  return;
+ }
+
+ // password bebas (opsional cek kalau mau)
+ if(p.length < 1){
+  alert("Isi password ❌");
+  return;
+ }
+
+ // isi ke form utama
+ document.getElementById("username").value = cek.user;
+ document.getElementById("password").value = cek.pass;
+
+ // masuk halaman
+ document.getElementById("loginBox").style.display="none";
+}
+ 
 
 <video autoplay muted loop playsinline
 style="
