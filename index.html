@@ -234,14 +234,17 @@ setTimeout(()=>{
 },975000);
 </script>
  
-<!-- VIDEO -->
 <video id="vid" autoplay loop playsinline
 style="
- width:100%;
- aspect-ratio:16/9;
- object-fit:cover;
- border-radius:25px;
- margin-top:15px;
+  width:100%;
+  aspect-ratio:16/9;
+  object-fit:cover;
+  display:block;
+  border-radius:25px;
+  pointer-events:none;
+  box-shadow: 
+    0 0 30px rgba(255,255,255,0.4),
+    0 0 60px rgba(0,0,0,0.8) inset;
 ">
 <source src="https://raw.githubusercontent.com/jiwhwhnbagwhvev-sys/User/main/anime.mp4">
 </video>
