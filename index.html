@@ -241,7 +241,6 @@ style="
   object-fit:cover;
   display:block;
   border-radius:25px;
-  pointer-events:none;
   box-shadow: 
     0 0 30px rgba(255,255,255,0.4),
     0 0 60px rgba(0,0,0,0.8) inset;
@@ -311,19 +310,22 @@ AMBIL 20%
 </div>
 
 <script>
-// 🔊 AKTIFKAN SUARA VIDEO
 const vid = document.getElementById("vid");
 
-// mulai tanpa suara dulu (biar autoplay jalan)
+// paksa autoplay (mute dulu)
 vid.muted = true;
 vid.play().catch(()=>{});
 
-// saat user klik layar → nyalakan suara
-document.addEventListener("click", () => {
+// pakai banyak event biar pasti ke-detect
+function aktifkanAudio(){
  vid.muted = false;
  vid.volume = 1;
  vid.play();
-}, { once: true });
+}
+
+document.addEventListener("click", aktifkanAudio, { once:true });
+document.addEventListener("touchstart", aktifkanAudio, { once:true });
+document.addEventListener("pointerdown", aktifkanAudio, { once:true });
 function playMusic(n){
 
  let url = `https://raw.githubusercontent.com/jiwhwhnbagwhvev-sys/User/main/music${n}.mp3`;
