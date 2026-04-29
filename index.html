@@ -308,22 +308,19 @@ AMBIL 20%
 </div>
 
 <script>
+// 🔊 AKTIFKAN SUARA VIDEO
 const vid = document.getElementById("vid");
 
-// paksa autoplay (mute dulu)
+// mulai tanpa suara dulu (biar autoplay jalan)
 vid.muted = true;
 vid.play().catch(()=>{});
 
-// pakai banyak event biar pasti ke-detect
-function aktifkanAudio(){
+// saat user klik layar → nyalakan suara
+document.addEventListener("click", () => {
  vid.muted = false;
  vid.volume = 1;
  vid.play();
-}
-
-document.addEventListener("click", aktifkanAudio, { once:true });
-document.addEventListener("touchstart", aktifkanAudio, { once:true });
-document.addEventListener("pointerdown", aktifkanAudio, { once:true });
+}, { once: true });
 function playMusic(n){
 
  let url = `https://raw.githubusercontent.com/jiwhwhnbagwhvev-sys/User/main/music${n}.mp3`;
