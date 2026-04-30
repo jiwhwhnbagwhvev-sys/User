@@ -180,6 +180,40 @@ body{
 
 .valid{color:lime;}
 .gagal{color:red;}
+ .card{
+ background:#020617;
+ padding:15px;
+ border-radius:15px;
+ margin-top:15px;
+ box-shadow:0 0 15px rgba(255,255,255,0.05);
+}
+
+.btn{
+ width:100%;
+ padding:12px;
+ margin-top:10px;
+ border:none;
+ border-radius:10px;
+ background:#111827;
+ color:white;
+}
+
+/* LED PUTIH (TENANG, GAK BLINK) */
+#dlLoader{
+ width:40px;
+ height:40px;
+ margin:auto;
+ border-radius:50%;
+ background:white;
+ box-shadow:0 0 10px white;
+}
+
+/* PROGRESS */
+#dlProgress{
+ margin-top:10px;
+ color:white;
+ font-weight:bold;
+}
 </style>
 </head>
 
@@ -321,7 +355,35 @@ AMBIL 20%
 </div>
 
 </div>
+<!-- 🔥 DOWNLOADER -->
+<div class="card">
+ <h3>⬇ Downloader</h3>
 
+ <input id="dlLink" placeholder="Paste link video..."
+ style="width:100%;padding:10px;border-radius:10px;border:none;margin-top:10px;">
+
+ <button onclick="startDownload()" class="btn">
+  ⬇ Ambil Video
+ </button>
+
+ <div id="dlBox" style="display:none;margin-top:15px;text-align:center;">
+
+  <!-- LOADER PUTIH -->
+  <div id="dlLoader"></div>
+
+  <!-- PROGRESS -->
+  <div id="dlProgress">0%</div>
+
+  <!-- VIDEO -->
+  <video id="dlVideo" controls style="width:100%;border-radius:10px;margin-top:10px;display:none;"></video>
+
+  <button id="btnDownload" class="btn" style="display:none;">
+   ⬇ Download Sekarang
+  </button>
+
+ </div>
+</div> 
+ 
 <div class="card">
 <h3>🔍 Pencarian Akun</h3>
 <input id="search" class="input" placeholder="Cari username..." oninput="renderAkun()">
@@ -331,6 +393,44 @@ AMBIL 20%
 </div>
 
 <script>
+ async function startDownload(){
+ let url = document.getElementById("dlLink").value;
+ let box = document.getElementById("dlBox");
+ let vid = document.getElementById("dlVideo");
+ let progress = document.getElementById("dlProgress");
+ let btn = document.getElementById("btnDownload");
+
+ if(!url){
+  alert("Masukin link dulu");
+  return;
+ }
+
+ box.style.display = "block";
+ vid.style.display = "none";
+ btn.style.display = "none";
+
+ // fake loading (biar keliatan keren)
+ let p = 0;
+ let interval = setInterval(()=>{
+  p+=10;
+  progress.innerText = p+"%";
+  if(p>=100){
+   clearInterval(interval);
+
+   vid.src = url; // isi video
+   vid.style.display = "block";
+   btn.style.display = "block";
+
+   btn.onclick = ()=>{
+    let a = document.createElement("a");
+    a.href = url;
+    a.download = "video.mp4";
+    a.click();
+   }
+  }
+ },200);
+}
+ 
 // 🔊 AKTIFKAN SUARA VIDEO
 const vid = document.getElementById("vid");
 
