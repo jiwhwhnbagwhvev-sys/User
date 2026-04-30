@@ -468,7 +468,7 @@ let akunData=[
   { user: 'Kiraaa', pass: 'kxxxxxx',role:'VIP'}, 
   { user: 'rafian10', pass: 'bxxxxxx',role:'VIP'}, 
   { user: 'Naiklevel', pass: '5xxxxxx',role:'VIP'}, 
-  { user: 'ginjal', pass: 'pxxxxxx',role:'TRIALL'}, 
+  { user:   'Ginjal', pass:'pxxxxxx', status:'TRIALL', exp:"2026-05-05"}, 
   { user: 'Raza', pass: 'yxxxxxx',role:'VIP'} 
 ];
 // LOGIN
@@ -505,21 +505,46 @@ document.getElementById("musicFile").onchange = function(e){
 function sensor(p){
  return p ? p[0] + "xxxx" : "";
 }
+/* HITUNG SISA WAKTU */
+function getSisa(exp){
+ let now = new Date();
+ let end = new Date(exp);
+ let diff = end - now;
 
+ if(diff <= 0){
+  return {text:"Expired", color:"red"};
+ }
+
+ let hari = Math.floor(diff/(1000*60*60*24));
+ return {
+  text: hari + " hari lagi ("+exp+")",
+  color: "yellow"
+ };
+}
+ 
 // 🔍 RENDER AKUN
 function renderAkun(){
  let s = document.getElementById("search").value.toLowerCase();
  let hasil = akunData.filter(a => a.user.toLowerCase().includes(s));
 
- document.getElementById("akunList").innerHTML = hasil.map(a=>`
- <div class="item" onclick="isi('${a.user}','${a.pass}')">
- 👤 ${a.user}<br>
- 🔒 ${sensor(a.pass)}<br>
- <span style="color:lime">✔</span> ${a.role}
- </div>
+ document.getElementById("akunList").innerHTML =
+ hasil.map(a => `
+  <div class="item">
+   👤 ${a.user}<br>
+   🔒 ${sensor(a.pass)}<br>
+   ✔ ${a.role}
+
+   ${
+     a.role === "TRIALL" && a.exp
+     ? `<div style="color:${getSisa(a.exp).color}; margin-top:5px;">
+         ⏳ ${getSisa(a.exp).text}
+       </div>`
+     : ""
+   }
+
+  </div>
  `).join("") || "<div class='item'>Tidak ditemukan</div>";
 }
-
 function isi(u,p){
  username.value=u;
  password.value=p;
