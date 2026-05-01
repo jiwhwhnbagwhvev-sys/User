@@ -331,21 +331,39 @@ AMBIL 20%
 </div>
 
 <script>
-// 🔊 AKTIFKAN SUARA VIDEO
+const audioPlayer = document.getElementById("audio");
 const vid = document.getElementById("vid");
 
-// mulai tanpa suara dulu (biar autoplay jalan)
-vid.muted = true;
-vid.play().catch(()=>{});
+// 🎵 musik play → video stop
+if(audioPlayer){
+ audioPlayer.addEventListener("play", () => {
+  if(vid){
+   vid.pause();
+   vid.currentTime = 0;
+  }
+ });
+}
 
-// saat user klik layar → nyalakan suara
-document.addEventListener("click", () => {
- vid.muted = false;
- vid.volume = 1;
- vid.play();
-}, { once: true });
-function playMusic(n){
+// 🎬 video play → musik stop
+if(vid){
+ vid.addEventListener("play", () => {
+  if(audioPlayer){
+   audioPlayer.pause();
+  }
+ });
+}
 
+// 🔊 autoplay + enable sound saat klik
+if(vid){
+ vid.muted = true;
+ vid.play().catch(()=>{});
+
+ document.addEventListener("click", () => {
+  vid.muted = false;
+  vid.volume = 1;
+  vid.play();
+ }, { once:true });
+}
  let url = `https://raw.githubusercontent.com/jiwhwhnbagwhvev-sys/User/main/music${n}.mp3`;
 
  let audioEl = document.getElementById("audio");
