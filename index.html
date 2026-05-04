@@ -232,7 +232,16 @@ style="
 </div>
 
 <div class="container">
+<div class="card" onclick="toggleOSINT()">
+<h3>🔍 OSINT Tools</h3>
+</div>
 
+<div id="osintBox" style="display:none">
+ <div class="item">📌 NIK Detail</div>
+ <div class="item">🌐 Domain Lookup</div>
+ <div class="item">📞 Phone Lookup</div>
+ <div class="item">📧 Email OSINT</div>
+</div>
 <img src="logo.png" class="logo-top">
 <div class="title">🅅🄸🄿 🅄🅂🄴🅁</div>
 
@@ -329,8 +338,66 @@ AMBIL 20%
 </div>
 
 </div>
+<div class="card">
+<h3>📖 Al-Qur’an</h3>
 
+<select id="surah" class="input" onchange="loadQuran()"></select>
+
+<div id="ayat"></div>
+</div>
 <script>
+ /* ========================= */
+/* OSINT */
+function toggleOSINT(){
+ let box = document.getElementById("osintBox");
+ box.style.display = box.style.display === "none" ? "block" : "none";
+}
+
+/* ========================= */
+/* DOWNLOADER */
+function download(){
+ let link = document.getElementById("linkDL").value;
+ document.getElementById("dlVideo").src = link;
+}
+
+/* ========================= */
+/* QURAN */
+async function loadSurahList(){
+ let res = await fetch("https://api.alquran.cloud/v1/surah");
+ let data = await res.json();
+
+ let html = "";
+ data.data.forEach(s=>{
+  html += `<option value="${s.number}">
+   ${s.number}. ${s.englishName}
+  </option>`;
+ });
+
+ document.getElementById("surah").innerHTML = html;
+ loadQuran();
+}
+
+async function loadQuran(){
+ let s = document.getElementById("surah").value;
+
+ let res = await fetch("https://api.alquran.cloud/v1/surah/"+s+"/ar.alafasy");
+ let data = await res.json();
+
+ let html = "";
+ data.data.ayahs.forEach(a=>{
+  html += `
+  <div class="item">
+    ${a.text}
+    <audio controls src="${a.audio}"></audio>
+  </div>
+  `;
+ });
+
+ document.getElementById("ayat").innerHTML = html;
+}
+
+/* WAJIB */
+loadSurahList();
 // 🔊 AKTIFKAN SUARA VIDEO
 const vid = document.getElementById("vid");
 
