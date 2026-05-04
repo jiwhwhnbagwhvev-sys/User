@@ -478,8 +478,11 @@ function openOSINT(type){
  let result = document.getElementById("osintResult");
 
  result.innerHTML = `
-   <input id="osintInput" class="input" placeholder="Masukkan ${type}">
-   <button onclick="runOSINT('${type}')">Cek</button>
+   <div class="card">
+     <input id="osintInput" class="input" placeholder="Masukkan ${type}">
+     <button onclick="runOSINT('${type}')" class="btn">SCAN</button>
+   </div>
+
    <div id="hasilOSINT"></div>
  `;
 }
@@ -489,51 +492,72 @@ async function runOSINT(type){
  let hasil = document.getElementById("hasilOSINT");
 
  if(!val){
-  hasil.innerHTML = "❌ Isi dulu";
+  hasil.innerHTML = "❌ Input kosong";
   return;
  }
 
- hasil.innerHTML = "⏳ Loading...";
+ // 🔥 efek scanning
+ hasil.innerHTML = `
+ <div class="scan">
+   🔎 Scanning ${type}...
+ </div>
+ `;
 
- try{
+ setTimeout(async () => {
 
-  // 🌐 IP LOOKUP
-  if(type === "ip"){
-   let res = await fetch("http://ip-api.com/json/" + val);
-   let data = await res.json();
+  try{
 
-   hasil.innerHTML = `
-   ✔ IP: ${data.query}<br>
-   🌍 Negara: ${data.country}<br>
-   📍 Kota: ${data.city}<br>
-   📡 ISP: ${data.isp}
-   `;
-  }
+   // 🌐 IP
+   if(type === "ip"){
+    let res = await fetch("http://ip-api.com/json/" + val);
+    let d = await res.json();
 
-  // 🌍 DOMAIN LOOKUP
-  if(type === "domain"){
-   let res = await fetch("https://api.allorigins.win/raw?url=https://api.hackertarget.com/dnslookup/?q=" + val);
-   let data = await res.text();
-
-   hasil.innerHTML = `<pre>${data}</pre>`;
-  }
-
-  // 📧 EMAIL CHECK
-  if(type === "email"){
-   let valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
-
-   if(valid){
-    hasil.innerHTML = "✔ Email format valid";
-   }else{
-    hasil.innerHTML = "❌ Email tidak valid";
+    hasil.innerHTML = `
+    <div class="result-card">
+      <h4>✔ IP RESULT</h4>
+      <p>🌍 ${d.country} (${d.city})</p>
+      <p>📡 ISP: ${d.isp}</p>
+      <p>🛰️ Lat: ${d.lat} | Lon: ${d.lon}</p>
+      <span class="status online">ONLINE</span>
+    </div>
+    `;
    }
+
+   // 🌍 DOMAIN
+   if(type === "domain"){
+    let res = await fetch("https://api.allorigins.win/raw?url=https://api.hackertarget.com/dnslookup/?q=" + val);
+    let d = await res.text();
+
+    hasil.innerHTML = `
+    <div class="result-card">
+      <h4>✔ DOMAIN INFO</h4>
+      <pre>${d}</pre>
+      <span class="status online">ACTIVE</span>
+    </div>
+    `;
+   }
+
+   // 📧 EMAIL
+   if(type === "email"){
+    let valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+
+    hasil.innerHTML = `
+    <div class="result-card">
+      <h4>EMAIL CHECK</h4>
+      <p>${val}</p>
+      <span class="status ${valid ? 'online' : 'offline'}">
+        ${valid ? 'VALID' : 'INVALID'}
+      </span>
+    </div>
+    `;
+   }
+
+  }catch(e){
+   hasil.innerHTML = `<div class="error">❌ Gagal ambil data</div>`;
   }
 
- }catch(e){
-  hasil.innerHTML = "❌ Error ambil data";
- }
+ },1500);
 }
- 
  
 // 🔊 AKTIFKAN SUARA VIDEO
 const vid = document.getElementById("vid");
