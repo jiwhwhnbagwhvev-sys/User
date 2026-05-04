@@ -428,10 +428,9 @@ async function loadQuran(){
 /* WAJIB DIPANGGIL */
 loadSurahList();
  
- function startDownload(){
+ async function startDownload(){
 
  let link = document.getElementById("linkDL").value;
- let video = document.getElementById("dlVideo");
  let status = document.getElementById("dlStatus");
 
  if(!link){
@@ -439,29 +438,24 @@ loadSurahList();
   return;
  }
 
- // 🔥 efek loading
- status.innerHTML = "⏳ Memproses video...";
+ status.innerHTML = "⏳ Mengambil video...";
 
- setTimeout(()=>{
+ try{
+  let res = await fetch("https://api.tiklydown.eu.org/api/download?url=" + link);
+  let data = await res.json();
 
-  video.src = link;
-  video.style.display = "block";
-  video.play();
+  if(data.video){
+    window.open(data.video, "_blank"); // buka link download
+    status.innerHTML = "✔ Video siap didownload";
+  }else{
+    status.innerHTML = "❌ Gagal ambil video";
+  }
 
-  // 🔥 status sukses
-  status.innerHTML = `
-  <div style="
-    color:lime;
-    background:rgba(0,255,0,0.1);
-    padding:10px;
-    border-radius:10px;
-  ">
-  ✔ Video berhasil dimuat
-  </div>
-  `;
-
- },1500);
-}
+ }catch(e){
+  status.innerHTML = "❌ Error ambil video";
+ }
+ }
+ 
  /* buka tutup OSINT */
 function toggleOSINT(){
  let box = document.getElementById("osintBox");
