@@ -402,25 +402,25 @@ loadSurahList();
 const vid = document.getElementById("vid");
 const audioPlayer = document.getElementById("audio");
 
-// autoplay aman (tanpa suara dulu)
+// autoplay video tanpa suara
 vid.muted = true;
 vid.play().catch(()=>{});
 
-// klik di mana saja → aktifkan suara video
+// klik layar → aktifkan suara video
 document.addEventListener("click", () => {
  vid.muted = false;
  vid.volume = 1;
  vid.play();
 });
 
-// kalau musik diputar → video diam
+// 🎵 kalau musik diputar → MATIKAN suara video
 if(audioPlayer){
  audioPlayer.addEventListener("play", () => {
-  vid.pause();
+  vid.muted = true;   // 🔥 INI PENTING
  });
 }
 
-// kalau video diputar → musik berhenti
+// 🎬 kalau video diputar → MATIKAN musik
 vid.addEventListener("play", () => {
  if(audioPlayer){
   audioPlayer.pause();
