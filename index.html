@@ -6,6 +6,67 @@
 <title>VIP USER SYSTEM</title>
 
 <style>
+.tt-box{
+ background:#020617;
+ border-radius:20px;
+ box-shadow:0 0 25px rgba(255,0,100,0.3);
+}
+
+.tt-input{
+ background:#000;
+ border:1px solid rgba(255,0,100,0.3);
+}
+
+.tt-btn{
+ background:linear-gradient(45deg,#ff0055,#ff00cc);
+ font-weight:bold;
+}
+
+.video-wrap{
+ margin-top:10px;
+ border-radius:15px;
+ overflow:hidden;
+ box-shadow:0 0 20px rgba(255,0,100,0.4);
+}
+
+#ttVideo{
+ width:100%;
+ display:none;
+}
+
+#ttStatus{
+ margin-top:10px;
+ text-align:center;
+}
+
+/* loading */
+.scan{
+ color:#ff0055;
+ animation:blink 1s infinite;
+}
+
+@keyframes blink{
+ 0%{opacity:1}
+ 50%{opacity:0.4}
+ 100%{opacity:1}
+}
+
+/* success */
+.success{
+ background:rgba(0,255,150,0.1);
+ color:lime;
+ padding:10px;
+ border-radius:10px;
+}
+
+/* error */
+.error{
+ background:rgba(255,0,0,0.1);
+ color:red;
+ padding:10px;
+ border-radius:10px;
+}
+ 
  #osintBox{
  margin-top:10px;
 }
@@ -364,18 +425,22 @@ AMBIL 20%
 <div id="ayat"></div>
 </div>
  
-<div class="card">
+<div class="card tt-box">
+
 <h3>⬇ TikTok Downloader</h3>
 
-<input id="ttLink" class="input" placeholder="Paste link TikTok...">
+<input id="ttLink" class="input tt-input" placeholder="Paste link TikTok...">
 
-<button onclick="getVideo()" class="btn">GET VIDEO</button>
+<button onclick="getVideo()" class="btn tt-btn">GET VIDEO</button>
 
 <div id="ttStatus"></div>
 
-<video id="ttVideo" controls style="width:100%;margin-top:10px;display:none"></video>
+<div class="video-wrap">
+ <video id="ttVideo" controls></video>
+</div>
 
-<div id="dlBtn" style="margin-top:10px;"></div>
+<div id="dlBtn"></div>
+
 </div>
  
 <script>
@@ -465,65 +530,51 @@ async function getVideo(){
  let btn = document.getElementById("dlBtn");
 
  if(!link){
-  status.innerHTML = "❌ Masukin link dulu";
+  status.innerHTML = "<div class='error'>❌ Masukin link dulu</div>";
   return;
  }
 
- status.innerHTML = "⏳ Mengambil video...";
+ status.innerHTML = "<div class='scan'>🔎 Mengambil video...</div>";
  btn.innerHTML = "";
 
  try{
 
-  let res = await fetch("https://api.tiklydown.eu.org/api/download?url=" + encodeURIComponent(link));
+  let res = await fetch("https://tikwm.com/api/?url=" + encodeURIComponent(link));
   let data = await res.json();
 
-  if(data.video){
+  if(data.data && data.data.play){
 
-   videoURL = data.video;
+   videoURL = data.data.play;
 
-   // tampilkan preview
    video.src = videoURL;
    video.style.display = "block";
    video.play();
 
-   // tampilkan tombol download
+   status.innerHTML = "<div class='success'>✔ Video siap</div>";
+
    btn.innerHTML = `
    <button onclick="downloadVideo()" class="btn">⬇ Download Video</button>
-   <button onclick="downloadAudio()" class="btn">🎵 Download Audio</button>
    `;
 
-   status.innerHTML = "✔ Preview siap";
-
   }else{
-   status.innerHTML = "❌ Gagal ambil video";
+   status.innerHTML = "<div class='error'>❌ Gagal ambil video</div>";
   }
 
  }catch(e){
-  status.innerHTML = "❌ API error";
+  status.innerHTML = "<div class='error'>❌ Server error</div>";
  }
 
 }
 
-// download video
 function downloadVideo(){
  if(videoURL){
   let a = document.createElement("a");
   a.href = videoURL;
-  a.download = "video.mp4";
+  a.download = "tiktok.mp4";
   a.click();
  }
-}
+ }
 
-// download audio (ambil dari video)
-function downloadAudio(){
- if(videoURL){
-  let a = document.createElement("a");
-  a.href = videoURL;
-  a.download = "audio.mp3";
-  a.click();
- }
-}
- 
  function toggleOSINT(){
  let box = document.getElementById("osintBox");
  box.style.display = (box.style.display === "block") ? "none" : "block";
