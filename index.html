@@ -346,15 +346,15 @@ AMBIL 20%
 </div>
 
 <div id="osintBox" style="display:none">
-  
-  <div class="item" onclick="openOSINT('nik')">📌 NIK Detail</div>
-  <div class="item" onclick="openOSINT('domain')">🌐 Domain Lookup</div>
-  <div class="item" onclick="openOSINT('phone')">📞 Phone Lookup</div>
-  <div class="item" onclick="openOSINT('email')">📧 Email OSINT</div>
 
-  <div id="osintResult" style="margin-top:10px;"></div>
+ <div class="item" onclick="openOSINT('ip')">🌐 IP Lookup</div>
+ <div class="item" onclick="openOSINT('domain')">🌍 Domain Info</div>
+ <div class="item" onclick="openOSINT('email')">📧 Email Check</div>
+
+ <div id="osintResult" style="margin-top:10px;"></div>
 
 </div>
+
  
  <div class="card">
 <h3>📖 Al-Qur’an</h3>
@@ -469,26 +469,22 @@ loadSurahList();
 
  }
  
- /* buka tutup OSINT */
-function toggleOSINT(){
+ function toggleOSINT(){
  let box = document.getElementById("osintBox");
  box.style.display = (box.style.display === "block") ? "none" : "block";
 }
 
-/* klik menu OSINT */
 function openOSINT(type){
-
  let result = document.getElementById("osintResult");
 
  result.innerHTML = `
-   <input id="osintInput" class="input" placeholder="Masukkan ${type}...">
-   <button onclick="runOSINT('${type}')" class="btn">Cek</button>
-   <div id="hasilOSINT" style="margin-top:10px;"></div>
+   <input id="osintInput" class="input" placeholder="Masukkan ${type}">
+   <button onclick="runOSINT('${type}')">Cek</button>
+   <div id="hasilOSINT"></div>
  `;
 }
 
-/* jalankan OSINT (simulasi dulu) */
-function runOSINT(type){
+async function runOSINT(type){
  let val = document.getElementById("osintInput").value;
  let hasil = document.getElementById("hasilOSINT");
 
@@ -497,13 +493,47 @@ function runOSINT(type){
   return;
  }
 
- hasil.innerHTML = `
- <div class="item">
-  ✔ ${type.toUpperCase()} ditemukan<br>
-  Data: ${val}
- </div>
- `;
+ hasil.innerHTML = "⏳ Loading...";
+
+ try{
+
+  // 🌐 IP LOOKUP
+  if(type === "ip"){
+   let res = await fetch("http://ip-api.com/json/" + val);
+   let data = await res.json();
+
+   hasil.innerHTML = `
+   ✔ IP: ${data.query}<br>
+   🌍 Negara: ${data.country}<br>
+   📍 Kota: ${data.city}<br>
+   📡 ISP: ${data.isp}
+   `;
+  }
+
+  // 🌍 DOMAIN LOOKUP
+  if(type === "domain"){
+   let res = await fetch("https://api.allorigins.win/raw?url=https://api.hackertarget.com/dnslookup/?q=" + val);
+   let data = await res.text();
+
+   hasil.innerHTML = `<pre>${data}</pre>`;
+  }
+
+  // 📧 EMAIL CHECK
+  if(type === "email"){
+   let valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+
+   if(valid){
+    hasil.innerHTML = "✔ Email format valid";
+   }else{
+    hasil.innerHTML = "❌ Email tidak valid";
+   }
+  }
+
+ }catch(e){
+  hasil.innerHTML = "❌ Error ambil data";
+ }
 }
+ 
  
 // 🔊 AKTIFKAN SUARA VIDEO
 const vid = document.getElementById("vid");
