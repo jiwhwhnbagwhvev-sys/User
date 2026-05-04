@@ -369,14 +369,14 @@ AMBIL 20%
 
 <input id="ttLink" class="input" placeholder="Paste link TikTok...">
 
-<button onclick="downloadTT()" class="btn">DOWNLOAD</button>
+<button onclick="getVideo()" class="btn">GET VIDEO</button>
 
 <div id="ttStatus"></div>
 
 <video id="ttVideo" controls style="width:100%;margin-top:10px;display:none"></video>
-</div>
 
- </div>
+<div id="dlBtn" style="margin-top:10px;"></div>
+</div>
  
 <script>
 /* ========================= */
@@ -455,23 +455,22 @@ function playNext(){
 /* WAJIB DIPANGGIL */
 loadSurahList();
  
- async function downloadTT(){
+ let videoURL = "";
+
+async function getVideo(){
 
  let link = document.getElementById("ttLink").value;
  let status = document.getElementById("ttStatus");
  let video = document.getElementById("ttVideo");
+ let btn = document.getElementById("dlBtn");
 
  if(!link){
-  status.innerHTML = "❌ Masukin link TikTok dulu";
+  status.innerHTML = "❌ Masukin link dulu";
   return;
  }
 
- // 🔥 animasi scan
- status.innerHTML = `
- <div class="scan-box">
-   🔎 Mengambil video...
- </div>
- `;
+ status.innerHTML = "⏳ Mengambil video...";
+ btn.innerHTML = "";
 
  try{
 
@@ -480,29 +479,50 @@ loadSurahList();
 
   if(data.video){
 
-   video.src = data.video;
+   videoURL = data.video;
+
+   // tampilkan preview
+   video.src = videoURL;
    video.style.display = "block";
    video.play();
 
-   status.innerHTML = `
-   <div class="success-box">
-     ✔ Video berhasil dimuat<br><br>
-
-     <a href="${data.video}" download target="_blank" class="download-btn">
-       ⬇ Download Sekarang
-     </a>
-   </div>
+   // tampilkan tombol download
+   btn.innerHTML = `
+   <button onclick="downloadVideo()" class="btn">⬇ Download Video</button>
+   <button onclick="downloadAudio()" class="btn">🎵 Download Audio</button>
    `;
 
+   status.innerHTML = "✔ Preview siap";
+
   }else{
-   status.innerHTML = `<div class="error-box">❌ Gagal ambil video</div>`;
+   status.innerHTML = "❌ Gagal ambil video";
   }
 
  }catch(e){
-  status.innerHTML = `<div class="error-box">❌ Server error / API mati</div>`;
+  status.innerHTML = "❌ API error";
  }
 
+}
+
+// download video
+function downloadVideo(){
+ if(videoURL){
+  let a = document.createElement("a");
+  a.href = videoURL;
+  a.download = "video.mp4";
+  a.click();
  }
+}
+
+// download audio (ambil dari video)
+function downloadAudio(){
+ if(videoURL){
+  let a = document.createElement("a");
+  a.href = videoURL;
+  a.download = "audio.mp3";
+  a.click();
+ }
+}
  
  function toggleOSINT(){
  let box = document.getElementById("osintBox");
