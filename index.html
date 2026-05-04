@@ -345,11 +345,15 @@ AMBIL 20%
 </div>
 <script>
  /* ========================= */
-/* OSINT */
 function toggleOSINT(){
  let box = document.getElementById("osintBox");
- box.style.display = box.style.display === "none" ? "block" : "none";
-}
+
+ if(box.style.display === "none" || box.style.display === ""){
+  box.style.display = "block";
+ }else{
+  box.style.display = "none";
+ }
+ }
 
 /* ========================= */
 /* DOWNLOADER */
