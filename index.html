@@ -364,16 +364,13 @@ AMBIL 20%
 <div id="ayat"></div>
 </div>
  
- <div class="card">
-<h3>⬇ Downloader</h3>
+<input id="linkDL" class="input" placeholder="Paste link TikTok">
+<button onclick="startDownload()">Download</button>
 
-<input id="linkDL" class="input" placeholder="Paste link video">
-
-<button onclick="startDownload()" class="btn">Download</button>
-
-<div id="dlStatus" style="margin-top:10px;"></div>
+<div id="dlStatus"></div>
 
 <video id="dlVideo" controls style="width:100%;margin-top:10px;display:none"></video>
+
  </div>
  
 <script>
@@ -432,28 +429,44 @@ loadSurahList();
 
  let link = document.getElementById("linkDL").value;
  let status = document.getElementById("dlStatus");
+ let video = document.getElementById("dlVideo");
 
  if(!link){
-  status.innerHTML = "❌ Masukin link dulu";
+  status.innerHTML = "❌ Masukin link TikTok dulu";
   return;
  }
 
- status.innerHTML = "⏳ Mengambil video...";
+ status.innerHTML = "⏳ Mengambil video TikTok...";
 
  try{
-  let res = await fetch("https://api.tiklydown.eu.org/api/download?url=" + link);
+
+  // 🔥 API TikTok downloader
+  let res = await fetch("https://api.tiklydown.eu.org/api/download?url=" + encodeURIComponent(link));
   let data = await res.json();
 
   if(data.video){
-    window.open(data.video, "_blank"); // buka link download
-    status.innerHTML = "✔ Video siap didownload";
+
+   // tampilkan video
+   video.src = data.video;
+   video.style.display = "block";
+   video.play();
+
+   // tombol download
+   status.innerHTML = `
+   <a href="${data.video}" download target="_blank" 
+   style="color:lime;display:block;margin-top:10px">
+   ✔ Klik di sini untuk download video
+   </a>
+   `;
+
   }else{
-    status.innerHTML = "❌ Gagal ambil video";
+   status.innerHTML = "❌ Gagal ambil video";
   }
 
  }catch(e){
-  status.innerHTML = "❌ Error ambil video";
+  status.innerHTML = "❌ Error server / API mati";
  }
+
  }
  
  /* buka tutup OSINT */
