@@ -402,31 +402,56 @@ async function loadSurahList(){
  }
 }
 
+let ayatList = [];
+let currentAyat = 0;
+
 async function loadQuran(){
  let s = document.getElementById("surah").value;
 
- try{
-  let res = await fetch("https://api.alquran.cloud/v1/surah/"+s+"/ar.alafasy");
-  let data = await res.json();
+ let res = await fetch("https://api.alquran.cloud/v1/surah/"+s+"/ar.alafasy");
+ let data = await res.json();
 
-  let html = "";
+ ayatList = data.data.ayahs;
+ currentAyat = 0;
 
-  data.data.ayahs.forEach(a=>{
-   html += `
-   <div class="item">
-     ${a.text}
-     <audio controls src="${a.audio}"></audio>
-   </div>
-   `;
-  });
+ let html = "";
 
-  document.getElementById("ayat").innerHTML = html;
+ ayatList.forEach((a,i)=>{
+  html += `
+  <div class="item">
+    <b>Ayat ${i+1}</b><br>
+    ${a.text}
+  </div>
+  `;
+ });
 
- }catch(e){
-  document.getElementById("ayat").innerHTML = "❌ Gagal ambil ayat";
- }
+ // 🔥 tombol play semua
+ html = `
+ <button onclick="playAll()" class="btn">▶ Play Semua Ayat</button>
+ ` + html;
+
+ document.getElementById("ayat").innerHTML = html;
 }
 
+ let player = new Audio();
+
+function playAll(){
+ currentAyat = 0;
+ playNext();
+}
+
+function playNext(){
+ if(currentAyat >= ayatList.length) return;
+
+ player.src = ayatList[currentAyat].audio;
+ player.play();
+
+ player.onended = () => {
+  currentAyat++;
+  playNext();
+ };
+}
+ 
 /* WAJIB DIPANGGIL */
 loadSurahList();
  
