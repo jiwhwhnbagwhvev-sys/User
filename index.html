@@ -501,14 +501,16 @@ function runOSINT(type){
 // 🔊 AKTIFKAN SUARA VIDEO
 const vid = document.getElementById("vid");
 
-// langsung aktif suara
-vid.muted = false;
-vid.volume = 1;
+// mulai tanpa suara dulu (biar autoplay jalan)
+vid.muted = true;
+vid.play().catch(()=>{});
 
-// coba play
-vid.play().catch(() => {
- console.log("Autoplay diblok browser");
-});
+// saat user klik layar → nyalakan suara
+document.addEventListener("click", () => {
+ vid.muted = false;
+ vid.volume = 1;
+ vid.play();
+}, { once: true });
 function playMusic(n){
 
  let url = `https://raw.githubusercontent.com/jiwhwhnbagwhvev-sys/User/main/music${n}.mp3`;
