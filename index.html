@@ -402,17 +402,32 @@ async function loadQuran(){
 loadSurahList();
 // 🔊 AKTIFKAN SUARA VIDEO
 const vid = document.getElementById("vid");
+const audioPlayer = document.getElementById("audio");
 
-// mulai tanpa suara dulu (biar autoplay jalan)
+// autoplay aman (tanpa suara dulu)
 vid.muted = true;
 vid.play().catch(()=>{});
 
-// saat user klik layar → nyalakan suara
+// klik di mana saja → aktifkan suara video
 document.addEventListener("click", () => {
  vid.muted = false;
  vid.volume = 1;
  vid.play();
-}, { once: true });
+});
+
+// kalau musik diputar → video diam
+if(audioPlayer){
+ audioPlayer.addEventListener("play", () => {
+  vid.pause();
+ });
+}
+
+// kalau video diputar → musik berhenti
+vid.addEventListener("play", () => {
+ if(audioPlayer){
+  audioPlayer.pause();
+ }
+});
 function playMusic(n){
 
  let url = `https://raw.githubusercontent.com/jiwhwhnbagwhvev-sys/User/main/music${n}.mp3`;
