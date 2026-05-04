@@ -6,6 +6,19 @@
 <title>VIP USER SYSTEM</title>
 
 <style>
+ #osintBox{
+ margin-top:10px;
+}
+
+.item{
+ cursor:pointer;
+}
+
+.item:active{
+ transform:scale(0.95);
+ opacity:0.7;
+}
+ 
 body{
  margin:0;
  font-family:Arial;
@@ -327,10 +340,59 @@ AMBIL 20%
 <input id="search" class="input" placeholder="Cari username..." oninput="renderAkun()">
 <div id="akunList"></div>
 </div>
-
+ 
+<div class="card" onclick="toggleOSINT()">
+<h3>🔍 OSINT Tools</h3>
 </div>
 
+<div id="osintBox" style="display:none">
+  
+  <div class="item" onclick="openOSINT('nik')">📌 NIK Detail</div>
+  <div class="item" onclick="openOSINT('domain')">🌐 Domain Lookup</div>
+  <div class="item" onclick="openOSINT('phone')">📞 Phone Lookup</div>
+  <div class="item" onclick="openOSINT('email')">📧 Email OSINT</div>
+
+  <div id="osintResult" style="margin-top:10px;"></div>
+
+</div>
+ 
 <script>
+ /* buka tutup OSINT */
+function toggleOSINT(){
+ let box = document.getElementById("osintBox");
+ box.style.display = (box.style.display === "block") ? "none" : "block";
+}
+
+/* klik menu OSINT */
+function openOSINT(type){
+
+ let result = document.getElementById("osintResult");
+
+ result.innerHTML = `
+   <input id="osintInput" class="input" placeholder="Masukkan ${type}...">
+   <button onclick="runOSINT('${type}')" class="btn">Cek</button>
+   <div id="hasilOSINT" style="margin-top:10px;"></div>
+ `;
+}
+
+/* jalankan OSINT (simulasi dulu) */
+function runOSINT(type){
+ let val = document.getElementById("osintInput").value;
+ let hasil = document.getElementById("hasilOSINT");
+
+ if(!val){
+  hasil.innerHTML = "❌ Isi dulu";
+  return;
+ }
+
+ hasil.innerHTML = `
+ <div class="item">
+  ✔ ${type.toUpperCase()} ditemukan<br>
+  Data: ${val}
+ </div>
+ `;
+}
+ 
 // 🔊 AKTIFKAN SUARA VIDEO
 const vid = document.getElementById("vid");
 
