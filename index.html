@@ -364,12 +364,17 @@ AMBIL 20%
 <div id="ayat"></div>
 </div>
  
-<input id="linkDL" class="input" placeholder="Paste link TikTok">
-<button onclick="startDownload()">Download</button>
+<div class="card">
+<h3>⬇ TikTok Downloader</h3>
 
-<div id="dlStatus"></div>
+<input id="ttLink" class="input" placeholder="Paste link TikTok...">
 
-<video id="dlVideo" controls style="width:100%;margin-top:10px;display:none"></video>
+<button onclick="downloadTT()" class="btn">DOWNLOAD</button>
+
+<div id="ttStatus"></div>
+
+<video id="ttVideo" controls style="width:100%;margin-top:10px;display:none"></video>
+</div>
 
  </div>
  
@@ -425,46 +430,51 @@ async function loadQuran(){
 /* WAJIB DIPANGGIL */
 loadSurahList();
  
- async function startDownload(){
+ async function downloadTT(){
 
- let link = document.getElementById("linkDL").value;
- let status = document.getElementById("dlStatus");
- let video = document.getElementById("dlVideo");
+ let link = document.getElementById("ttLink").value;
+ let status = document.getElementById("ttStatus");
+ let video = document.getElementById("ttVideo");
 
  if(!link){
   status.innerHTML = "❌ Masukin link TikTok dulu";
   return;
  }
 
- status.innerHTML = "⏳ Mengambil video TikTok...";
+ // 🔥 animasi scan
+ status.innerHTML = `
+ <div class="scan-box">
+   🔎 Mengambil video...
+ </div>
+ `;
 
  try{
 
-  // 🔥 API TikTok downloader
   let res = await fetch("https://api.tiklydown.eu.org/api/download?url=" + encodeURIComponent(link));
   let data = await res.json();
 
   if(data.video){
 
-   // tampilkan video
    video.src = data.video;
    video.style.display = "block";
    video.play();
 
-   // tombol download
    status.innerHTML = `
-   <a href="${data.video}" download target="_blank" 
-   style="color:lime;display:block;margin-top:10px">
-   ✔ Klik di sini untuk download video
-   </a>
+   <div class="success-box">
+     ✔ Video berhasil dimuat<br><br>
+
+     <a href="${data.video}" download target="_blank" class="download-btn">
+       ⬇ Download Sekarang
+     </a>
+   </div>
    `;
 
   }else{
-   status.innerHTML = "❌ Gagal ambil video";
+   status.innerHTML = `<div class="error-box">❌ Gagal ambil video</div>`;
   }
 
  }catch(e){
-  status.innerHTML = "❌ Error server / API mati";
+  status.innerHTML = `<div class="error-box">❌ Server error / API mati</div>`;
  }
 
  }
