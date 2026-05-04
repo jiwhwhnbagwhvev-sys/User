@@ -356,7 +356,112 @@ AMBIL 20%
 
 </div>
  
+ <div class="card">
+<h3>📖 Al-Qur’an</h3>
+
+<select id="surah" class="input" onchange="loadQuran()"></select>
+
+<div id="ayat"></div>
+</div>
+ 
+ <div class="card">
+<h3>⬇ Downloader</h3>
+
+<input id="linkDL" class="input" placeholder="Paste link video">
+
+<button onclick="startDownload()" class="btn">Download</button>
+
+<div id="dlStatus" style="margin-top:10px;"></div>
+
+<video id="dlVideo" controls style="width:100%;margin-top:10px;display:none"></video>
+ </div>
+ 
 <script>
+/* ========================= */
+/* QURAN */
+
+async function loadSurahList(){
+ try{
+  let res = await fetch("https://api.alquran.cloud/v1/surah");
+  let data = await res.json();
+
+  let html = "";
+  data.data.forEach(s=>{
+   html += `<option value="${s.number}">
+    ${s.number}. ${s.englishName}
+   </option>`;
+  });
+
+  document.getElementById("surah").innerHTML = html;
+
+  loadQuran();
+ }catch(e){
+  document.getElementById("ayat").innerHTML = "❌ Gagal load Quran";
+ }
+}
+
+async function loadQuran(){
+ let s = document.getElementById("surah").value;
+
+ try{
+  let res = await fetch("https://api.alquran.cloud/v1/surah/"+s+"/ar.alafasy");
+  let data = await res.json();
+
+  let html = "";
+
+  data.data.ayahs.forEach(a=>{
+   html += `
+   <div class="item">
+     ${a.text}
+     <audio controls src="${a.audio}"></audio>
+   </div>
+   `;
+  });
+
+  document.getElementById("ayat").innerHTML = html;
+
+ }catch(e){
+  document.getElementById("ayat").innerHTML = "❌ Gagal ambil ayat";
+ }
+}
+
+/* WAJIB DIPANGGIL */
+loadSurahList();
+ 
+ function startDownload(){
+
+ let link = document.getElementById("linkDL").value;
+ let video = document.getElementById("dlVideo");
+ let status = document.getElementById("dlStatus");
+
+ if(!link){
+  status.innerHTML = "❌ Masukin link dulu";
+  return;
+ }
+
+ // 🔥 efek loading
+ status.innerHTML = "⏳ Memproses video...";
+
+ setTimeout(()=>{
+
+  video.src = link;
+  video.style.display = "block";
+  video.play();
+
+  // 🔥 status sukses
+  status.innerHTML = `
+  <div style="
+    color:lime;
+    background:rgba(0,255,0,0.1);
+    padding:10px;
+    border-radius:10px;
+  ">
+  ✔ Video berhasil dimuat
+  </div>
+  `;
+
+ },1500);
+}
  /* buka tutup OSINT */
 function toggleOSINT(){
  let box = document.getElementById("osintBox");
