@@ -1141,6 +1141,38 @@ function clearBot(){
 
 render();
 renderAkun();
+// ================= FOTO PROFIL =================
+
+// LOAD FOTO
+let photo = localStorage.getItem("photo");
+if(photo){
+ setPhoto(photo);
+}
+
+// CLICK AVATAR
+document.getElementById("avatar").onclick = ()=>{
+ document.getElementById("uploadPhoto").click();
+};
+
+// UPLOAD
+document.getElementById("uploadPhoto").onchange = function(){
+ let file = this.files[0];
+ if(!file) return;
+
+ let reader = new FileReader();
+ reader.onload = function(e){
+  let img = e.target.result;
+
+  localStorage.setItem("photo", img);
+  setPhoto(img);
+ };
+ reader.readAsDataURL(file);
+};
+
+// SET FOTO
+function setPhoto(src){
+ document.getElementById("avatar").innerHTML = `<img src="${src}">`;
+}
  
  function toggleMenu(){
  let menu = document.getElementById("userMenu");
