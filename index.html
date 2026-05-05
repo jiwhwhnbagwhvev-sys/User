@@ -314,7 +314,104 @@ style="
 <h3>𝕬𝖓𝖆𝖑𝖎𝖘𝖎𝖘 𝕾𝖎𝖘𝖙𝖊𝖒</h3>
 <div id="analisis">Tes muncul</div>
 </div>
-<script
+ <div class="card">
+
+<div class="top" style="display:flex;gap:10px">
+
+ <div style="flex:1;display:flex;gap:10px;background:#0b1238;padding:15px;border-radius:15px">
+  <div style="width:40px;height:40px;background:#1b2a6b;border-radius:10px;display:flex;align-items:center;justify-content:center">👥</div>
+  <div>
+   <div style="font-size:11px;color:#aaa">Total Users</div>
+   <div style="font-size:20px">1000</div>
+  </div>
+ </div>
+
+ <div style="flex:1;display:flex;gap:10px;background:#0b1238;padding:15px;border-radius:15px">
+  <div style="width:40px;height:40px;background:#1b2a6b;border-radius:10px;display:flex;align-items:center;justify-content:center">📶</div>
+  <div>
+   <div style="font-size:11px;color:#aaa">Online Sender</div>
+   <div id="online" style="font-size:20px">20</div>
+  </div>
+ </div>
+
+</div>
+
+<div style="margin-top:15px">
+
+ <div style="display:flex;justify-content:space-between;font-size:12px">
+  <span>🟢 SERVER STATISTICS</span>
+  <span id="uptime">32d</span>
+ </div>
+
+ <div style="display:flex;justify-content:space-between;margin-top:10px;text-align:center">
+
+  <div>
+   <div id="cpu">6%</div>
+   <small>CPU</small>
+  </div>
+
+  <div>
+   <div id="ram">8000 MB</div>
+   <small>RAM</small>
+  </div>
+
+  <div>
+   <div id="disk">500 MB</div>
+   <small>DISK</small>
+  </div>
+
+ </div>
+
+ <div style="display:flex;gap:10px;margin-top:10px">
+
+  <div style="flex:1;border:1px solid lime;padding:10px;border-radius:10px;text-align:center">
+   ⬇ <span id="down">70 KB/s</span>
+  </div>
+
+  <div style="flex:1;border:1px solid cyan;padding:10px;border-radius:10px;text-align:center">
+   ⬆ <span id="up">30 KB/s</span>
+  </div>
+
+ </div>
+
+</div>
+
+</div>
+ 
+<script>
+ // ONLINE FIX
+let online = 20;
+
+function updateOnline(){
+ let change = Math.random() < 0.5 ? -1 : 1;
+ online += change;
+
+ if(online > 30) online = 30;
+ if(online < 5) online = 5;
+
+ document.getElementById("online").innerText = online;
+}
+
+// STATS
+function rand(min,max){
+ return Math.floor(Math.random()*(max-min)+min);
+}
+
+function updateStats(){
+ document.getElementById("cpu").innerText = rand(1,80)+"%";
+ document.getElementById("ram").innerText = rand(2000,16000)+" MB";
+ document.getElementById("disk").innerText = rand(100,900)+" MB";
+
+ document.getElementById("down").innerText = rand(10,150)+" KB/s";
+ document.getElementById("up").innerText = rand(5,100)+" KB/s";
+}
+
+// interval
+setInterval(updateOnline,60000);
+setInterval(updateStats,3000);
+
+updateOnline();
+updateStats();
  
  // 🔥 TAMPIL LOGIN SETELAH OPENING
 setTimeout(()=>{
