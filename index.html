@@ -45,6 +45,24 @@
 #userMenu div:hover{
  background:#1b224a;
 }
+.page{
+ display:none;
+}
+
+#home{
+ display:block;
+}
+ 
+/* BIAR CARD GAK NUTUP */
+.card, .dashboard, .container, .box{
+ position: relative;
+ z-index: 1;
+}
+
+/* TAMBAHAN */
+#floatUser, #userMenu div{
+ cursor:pointer;
+}
  
 .avatar{
  width:100px;
@@ -330,6 +348,69 @@ body{
 </div>
  
 <body>
+ <div id="profile" class="page">
+<h2>My Profile</h2>
+
+<div style="text-align:center;margin-top:20px;">
+ <img id="fotoProfile" src="https://via.placeholder.com/100" 
+ style="width:100px;height:100px;border-radius:50%;box-shadow:0 0 20px purple;">
+ <br><br>
+ <input type="file" onchange="gantiFoto(event)">
+</div>
+
+<div style="margin-top:20px;">
+ Username: <span id="userNama">User</span><br>
+ Role: VIP<br>
+ Expired: 2026-07-27
+</div>
+
+<button onclick="back()">⬅ Back</button>
+</div>
+
+ <div id="cs" class="page">
+<h2>Customer Service</h2>
+
+<button onclick="window.open('https://wa.me/6281385998324')">WhatsApp</button><br><br>
+<button onclick="window.open('https://www.instagram.com/pecinta_hpkentang')">Instagram</button><br><br>
+<button onclick="window.open('https://www.tiktok.com/@pecintahpkentang')">TikTok</button>
+
+<br><br>
+<button onclick="back()">⬅ Back</button>
+</div>
+ <div id="info" class="page">
+<h2>Info & Peraturan</h2>
+
+<ul>
+ <li>Dilarang jual akun</li>
+ <li>Dilarang share akun</li>
+ <li>Dilarang barter</li>
+ <li>Dilarang jual akses ilegal</li>
+</ul>
+
+<br>
+<b style="color:red;">⚠ Akun melanggar akan dihapus permanen</b>
+
+<br><br>
+<button onclick="back()">⬅ Back</button>
+ </div>
+
+<div id="info" class="page">
+<h2>Info & Peraturan</h2>
+
+<ul>
+ <li>Dilarang jual akun</li>
+ <li>Dilarang share akun</li>
+ <li>Dilarang barter</li>
+ <li>Dilarang jual akses ilegal</li>
+</ul>
+
+<br>
+<b style="color:red;">⚠ Akun melanggar akan dihapus permanen</b>
+
+<br><br>
+<button onclick="back()">⬅ Back</button>
+</div>
+ 
 <video autoplay muted loop playsinline id="bgvid"
 style="
  position:fixed;
@@ -1141,6 +1222,28 @@ function clearBot(){
 
 render();
 renderAkun();
+function gantiFoto(e){
+ let file = e.target.files[0];
+ let reader = new FileReader();
+
+ reader.onload = function(){
+  document.getElementById("fotoProfile").src = reader.result;
+ }
+
+ reader.readAsDataURL(file);
+}
+
+function ubahPassword(){
+ let oldPw = document.getElementById("oldPw").value;
+ let newPw = document.getElementById("newPw").value;
+
+ if(oldPw && newPw){
+  alert("Password berhasil diubah!");
+ } else {
+  alert("Isi semua dulu!");
+ }
+}
+ 
 // ================= FOTO PROFIL =================
 
 // LOAD FOTO
@@ -1174,15 +1277,28 @@ function setPhoto(src){
  document.getElementById("avatar").innerHTML = `<img src="${src}">`;
 }
  
- function toggleMenu(){
+function toggleMenu(){
  let menu = document.getElementById("userMenu");
 
- if(menu.style.display==="block"){
-  menu.style.display="none";
- }else{
-  menu.style.display="block";
+ if(menu.style.display === "block"){
+  menu.style.display = "none";
+ } else {
+  menu.style.display = "block";
  }
+}
+
+function openPage(id){
+ document.querySelectorAll(".page").forEach(p=>{
+  p.style.display="none";
+ });
+
+ let page = document.getElementById(id);
+ if(page){
+  page.style.display="block";
  }
+
+ document.getElementById("userMenu").style.display="none";
+} 
  
 function goTop(){
  window.scrollTo({
