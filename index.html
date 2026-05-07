@@ -1000,16 +1000,32 @@ let akunData=[
   ];
 // LOGIN
 function login(){
- let u = luser.value;
- let cek = akunData.find(a => a.user === u);
+
+ let user = luser.value;
+ let pass = lpass.value;
+
+ // cari akun
+ let cek = akunData.find(a =>
+  a.user === user && a.pass === pass
+ );
 
  if(!cek){
-  alert("User tidak ada");
+  alert("Username / Password salah");
   return;
  }
-  // masuk
+
+ // masuk dashboard
  document.getElementById("loginBox").style.display="none";
+
+ document.getElementById("home").style.display="block";
+
+ // ubah nama
+ document.getElementById("rankName").innerHTML = cek.user;
+
+ // set role
+ setRole(cek.role);
 }
+ 
 // 🔥 MUSIC PLAYER
 document.getElementById("musicFile").onchange = function(e){
  let file = e.target.files[0];
