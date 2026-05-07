@@ -1022,24 +1022,50 @@ function login(){
  document.getElementById("rankRole").innerHTML =
  cek.role + " ACCESS";
 
- // icon role
+ // ambil element
+ let box = document.getElementById("rankBox");
+ let icon = document.getElementById("rankIcon");
+
+ // reset class
+ box.className = "rank";
+
+ // OWNER
  if(cek.role=="OWNER"){
-  document.getElementById("rankIcon").innerHTML="👑";
+
+  icon.innerHTML="👑";
+
+  box.classList.add("owner");
+
  }
 
+ // VIP
  else if(cek.role=="VIP"){
-  document.getElementById("rankIcon").innerHTML="💎";
+
+  icon.innerHTML="💎";
+
+  box.classList.add("vip");
+
  }
 
+ // RESELLER
  else if(cek.role=="RESELLER"){
-  document.getElementById("rankIcon").innerHTML="🚀";
+
+  icon.innerHTML="🚀";
+
+  box.classList.add("reseller");
+
  }
 
+ // MEMBER
  else{
-  document.getElementById("rankIcon").innerHTML="🙂";
+
+  icon.innerHTML="🙂";
+
+  box.classList.add("member");
+
  }
 
-}
+ }
  
 // 🔥 MUSIC PLAYER
 document.getElementById("musicFile").onchange = function(e){
