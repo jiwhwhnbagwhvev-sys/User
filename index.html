@@ -6,6 +6,77 @@
 <title>VIP USER SYSTEM</title>
 
 <style>
+/* RANK */
+.rank{
+display:flex;
+align-items:center;
+gap:15px;
+padding:15px;
+border-radius:20px;
+margin-top:15px;
+}
+
+.rank div h2{
+margin:0;
+}
+
+.rank div p{
+margin:0;
+opacity:0.8;
+}
+
+/* ICON */
+#rankIcon{
+width:70px;
+height:70px;
+border-radius:20px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:35px;
+}
+
+/* OWNER */
+.owner{
+background:linear-gradient(45deg,#ffcc00,#ff8800);
+box-shadow:0 0 25px #ffbb00;
+color:black;
+}
+
+.owner #rankIcon{
+background:#00000022;
+}
+
+/* VIP */
+.vip{
+background:linear-gradient(45deg,#7b4dff,#b388ff);
+box-shadow:0 0 25px #9b59ff;
+}
+
+.vip #rankIcon{
+background:#00000022;
+}
+
+/* RESELLER */
+.reseller{
+background:linear-gradient(45deg,#00bfff,#0066ff);
+box-shadow:0 0 25px #00aaff;
+}
+
+.reseller #rankIcon{
+background:#00000022;
+}
+
+/* MEMBER */
+.member{
+background:#1a1a1a;
+border:1px solid #333;
+}
+
+.member #rankIcon{
+background:#222;
+}
+ 
 .tt-box{
  background:#020617;
  border-radius:20px;
@@ -308,8 +379,21 @@ style="
 <div class="container">
 
 <img src="logo.png" class="logo-top">
-<div class="title">🅅🄸🄿 🅄🅂🄴🅁</div>
+<div id="rankBox" class="rank vip">
 
+<div id="rankIcon">💎</div>
+
+<div>
+<div id="rankName" style="font-size:22px;font-weight:bold">
+VIP USER
+</div>
+
+<div id="rankRole" style="font-size:13px;opacity:.8">
+VIP ACCESS
+</div>
+</div>
+
+</div>
 <div class="card">
 <h3>𝕬𝖓𝖆𝖑𝖎𝖘𝖎𝖘 𝕾𝖎𝖘𝖙𝖊𝖒</h3>
 <div id="analisis">Tes muncul</div>
@@ -1072,6 +1156,38 @@ function clearBot(){
 render();
 renderAkun();
 
+ /* ===== AUTO ROLE ===== */
+
+let roleUser = "OWNER";
+// ganti OWNER / VIP / RESELLER / MEMBER
+
+let rankBox = document.getElementById("rankBox");
+let rankIcon = document.getElementById("rankIcon");
+let rankRole = document.getElementById("rankRole");
+
+if(roleUser==="OWNER"){
+rankBox.className="rank owner";
+rankIcon.innerHTML="👑";
+rankRole.innerHTML="OWNER ACCESS";
+}
+
+if(roleUser==="VIP"){
+rankBox.className="rank vip";
+rankIcon.innerHTML="💎";
+rankRole.innerHTML="VIP ACCESS";
+}
+
+if(roleUser==="RESELLER"){
+rankBox.className="rank reseller";
+rankIcon.innerHTML="🚀";
+rankRole.innerHTML="RESELLER ACCESS";
+}
+
+if(roleUser==="MEMBER"){
+rankBox.className="rank member";
+rankIcon.innerHTML="🙂";
+rankRole.innerHTML="MEMBER ACCESS";
+}
 </script>
 
 </body>
