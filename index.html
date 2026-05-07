@@ -998,17 +998,16 @@ let akunData=[
   { user: 'Hitler', pass: 'gxxxxxx',role:'TRIALL'}, 
   { user: 'arya', pass: 'axxxxxx',role:'VIP'}
   ];
-
  // LOGIN
 function login(){
 
  let user = document.getElementById("luser").value.trim();
  let pass = document.getElementById("lpass").value.trim();
 
- // cari akun
  let cek = akunData.find(a =>
-  a.user === user && a.pass === pass
- );
+  a.user.toLowerCase().trim() === user.toLowerCase().trim() &&
+  a.pass.toLowerCase().trim() === pass.toLowerCase().trim()
+);
 
  if(!cek){
   alert("Username / Password salah");
