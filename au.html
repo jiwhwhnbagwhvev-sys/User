@@ -859,14 +859,56 @@ function executePanel(){
 
  }
 
- // COOLDOWN
- document.getElementById("cooldownBar").style.display="block";
+// AKTIFKAN COOLDOWN
+isCooldown=true;
 
- setTimeout(()=>{
+let waktu=200;
 
-  document.getElementById("cooldownBar").style.display="none";
+let bar=
+document.getElementById("cooldownBar");
 
- },5000);
+let btn=
+document.querySelector(".exec-btn");
+
+// DISABLE BUTTON
+btn.disabled=true;
+
+btn.style.opacity=".5";
+
+btn.innerHTML=
+"⏳ SYSTEM COOLDOWN";
+
+// SHOW
+bar.style.display="block";
+
+// TIMER
+let cd=setInterval(()=>{
+
+ bar.innerHTML=
+ "⏳ Cooldown " + waktu +
+ " detik";
+
+ waktu--;
+
+ // SELESAI
+ if(waktu<0){
+
+  clearInterval(cd);
+
+  isCooldown=false;
+
+  bar.style.display="none";
+
+  btn.disabled=false;
+
+  btn.style.opacity="1";
+
+  btn.innerHTML=
+  "🚀 EXECUTE SYSTEM";
+
+ }
+
+},1000);
 
  // CONSOLE
  document.getElementById("console").style.display="block";
