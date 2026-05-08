@@ -6,6 +6,42 @@
 <title>VIP USER SYSTEM</title>
 
 <style>
+/* SLIDER */
+.slider-wrap{
+width:100%;
+overflow-x:auto;
+padding:15px 0;
+margin-top:20px;
+scroll-snap-type:x mandatory;
+}
+
+.slider-wrap::-webkit-scrollbar{
+display:none;
+}
+
+.slider{
+display:flex;
+gap:15px;
+padding:0 10px;
+}
+
+.slider img{
+width:280px;
+height:280px;
+object-fit:cover;
+border-radius:30px;
+flex-shrink:0;
+scroll-snap-align:center;
+
+/* LED MERAH */
+border:3px solid rgba(255,0,0,.95);
+
+box-shadow:
+0 0 20px red,
+0 0 40px rgba(255,0,0,.9),
+0 0 70px rgba(255,0,0,.7);
+}
+ 
 /* ===== RANK SYSTEM ===== */
 
 .rank{
@@ -386,6 +422,18 @@ style="
 <div class="card">
 <h3>𝕬𝖓𝖆𝖑𝖎𝖘𝖎𝖘 𝕾𝖎𝖘𝖙𝖊𝖒</h3>
 <div id="analisis">Tes muncul</div>
+</div>
+ <!-- SLIDER IMAGE -->
+<div class="slider-wrap">
+
+<div class="slider">
+
+<img src="Owner1.jpg">
+
+<img src="Owner2.jpg">
+
+</div>
+
 </div>
  <div style="
 margin-top:15px;
