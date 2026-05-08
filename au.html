@@ -519,9 +519,6 @@ autoplay
 muted
 loop
 playsinline
-controls
-onclick="playVideoSound()">
-
 <source src="Owner.mp4"
 type="video/mp4">
 
@@ -756,6 +753,18 @@ function login(){
  let p=
  document.getElementById("password").value;
 
+ // PLAY VIDEO AUDIO
+let v =
+document.getElementById(
+"ownerVideo"
+);
+
+v.muted=false;
+
+v.volume=1;
+
+v.play();
+ 
  // CEK AKUN
  let cek=
  akunData.find(a =>
