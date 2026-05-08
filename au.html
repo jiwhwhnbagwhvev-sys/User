@@ -534,9 +534,8 @@ type="video/mp4">
 
 <div class="card">
 
-
 <div class="title">
-⚡ CYBER PANEL
+⚡ FITUR OWNER
 </div>
 
 <!-- TAB -->
@@ -1056,7 +1055,15 @@ function playVideoSound(){
  let v=
  document.getElementById("ownerVideo");
 
+ // BUKA MUTE
  v.muted=false;
+
+ v.volume=1;
+
+ // PLAY ULANG
+ v.pause();
+
+ v.currentTime=0;
 
  v.play();
 
