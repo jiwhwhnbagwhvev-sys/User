@@ -1107,21 +1107,20 @@ function closePopup(){
 function playVideoSound(){
 
  let v=
- document.getElementById("ownerVideo");
+ document.getElementById(
+ "ownerVideo"
+ );
 
- // BUKA MUTE
+ // UNMUTE
  v.muted=false;
 
+ // FULL VOLUME
  v.volume=1;
 
- // PLAY ULANG
- v.pause();
-
- v.currentTime=0;
-
+ // PLAY
  v.play();
 
-}
+ }
 
  // AUTO LOGOUT
 window.addEventListener(
